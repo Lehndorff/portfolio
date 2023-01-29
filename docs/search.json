@@ -1,10 +1,10 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Portfolio",
+    "objectID": "page 1.html",
+    "href": "page 1.html",
+    "title": "Page 1",
     "section": "",
-    "text": "To learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "To learn more about Quarto websites visit https://quarto.org/docs/websites.\n\nlibrary(ggplot2)\nlibrary(tidyverse)\n\n── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──\n✔ tibble  3.1.8      ✔ dplyr   1.0.10\n✔ tidyr   1.2.1      ✔ stringr 1.4.0 \n✔ readr   2.1.2      ✔ forcats 0.5.2 \n✔ purrr   0.3.4      \n\n\nWarning: package 'readr' was built under R version 4.0.5\n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\n\nmtcars %>% \n  ggplot()+\n  geom_bar(aes(x=cyl))"
   },
   {
     "objectID": "about.html",
@@ -14,10 +14,10 @@
     "text": "1 + 1\n\n[1] 2"
   },
   {
-    "objectID": "page 1.html",
-    "href": "page 1.html",
-    "title": "Page 1",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Portfolio",
     "section": "",
-    "text": "To learn more about Quarto websites visit https://quarto.org/docs/websites.\n\nlibrary(ggplot2)\nlibrary(tidyverse)\n\n── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──\n✔ tibble  3.1.8      ✔ dplyr   1.0.10\n✔ tidyr   1.2.1      ✔ stringr 1.4.0 \n✔ readr   2.1.2      ✔ forcats 0.5.2 \n✔ purrr   0.3.4      \n\n\nWarning: package 'readr' was built under R version 4.0.5\n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\n\nmtcars %>% \n  ggplot()+\n  geom_bar(aes(x=cyl))"
+    "text": "To learn more about Quarto websites visit https://quarto.org/docs/websites."
   }
 ]
