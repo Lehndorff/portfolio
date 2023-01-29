@@ -2,7 +2,7 @@
 title: "Portfolio"
 ---
 
-Requisit index file.
+Still the required index file.
 
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
 
