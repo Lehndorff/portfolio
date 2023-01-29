@@ -8,7 +8,8 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - page 1.qmd
+      - href: page 1.qmd
+        text: Page 1
 
 format:
   html:
