@@ -1,5 +1,5 @@
 ---
-title: "Portfolio"
+title: "Page 1"
 ---
 
 Requisit index file.
@@ -7,5 +7,11 @@ Requisit index file.
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
 
 ```{r}
+library(ggplot2)
+library(tidyverse)
+
+mtcars %>% 
+  ggplot()+
+  geom_bar(aes(x=cyl))
 
 ```
