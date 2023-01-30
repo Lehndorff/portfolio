@@ -2,16 +2,16 @@
   {
     "objectID": "page1.html",
     "href": "page1.html",
-    "title": "Page 1",
+    "title": "Swifts",
     "section": "",
-    "text": "To learn more about Quarto websites visit https://quarto.org/docs/websites.\n\nlibrary(ggplot2)\nlibrary(tidyverse)\n\n── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──\n✔ tibble  3.1.8      ✔ dplyr   1.0.10\n✔ tidyr   1.2.1      ✔ stringr 1.4.0 \n✔ readr   2.1.2      ✔ forcats 0.5.2 \n✔ purrr   0.3.4      \n\n\nWarning: package 'readr' was built under R version 4.0.5\n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\n\nmtcars %>% \n  ggplot()+\n  geom_bar(aes(x=cyl))"
+    "text": "Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of 20 randomly placed birds where each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one 'moment' in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "1 + 1\n\n[1] 2"
+    "text": "Evergreen Economics Resume"
   },
   {
     "objectID": "index.html",

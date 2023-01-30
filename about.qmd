@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-About this site
+About me
 
-```{r}
-1 + 1
-```
+[Evergreen Economics Resume](https://evergreenecon.com/wp-content/uploads/2021/06/Lehndorff-Resume_June2021.pdf)
