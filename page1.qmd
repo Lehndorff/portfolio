@@ -4,17 +4,19 @@ author:
 - name: Hans Lehndorff
 ---
 
-If you haven't seen it before, I highly recommend viewing the annual migration of [Vaux's swifts](https://audubonportland.org/go-outside/swift-watch/) at Chapman Elementary in northwest Portland. On evenings in the fall, up to 10,000 swifts roost in the chimney of the school. Their movements, when assembled, are very similar to that of starling groupings in Europe. According to [research](https://www.princeton.edu/news/2013/02/07/birds-feather-track-seven-neighbors-flock-together) from Princeton University, these formations are based on each individual bird trying to track the location of only seven other birds.
-
-Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of 20 randomly placed birds. Each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one 'moment' in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time.
-
-```{r, echo=F, message=FALSE, warning=F}
+```{r echo=F, message=FALSE, warning=F}
 library(ggplot2)
 library(gganimate)
 library(tidyverse)
 
 load("data/swift_data.rdata")
+```
 
+If you haven't seen it before, I highly recommend viewing the annual migration of [Vaux's swifts](https://audubonportland.org/go-outside/swift-watch/) at Chapman Elementary in northwest Portland. On evenings in the fall, up to 10,000 swifts roost in the chimney of the school. Their movements, when assembled, are very similar to that of starling groupings in Europe. According to [research](https://www.princeton.edu/news/2013/02/07/birds-feather-track-seven-neighbors-flock-together) from Princeton University, these formations are based on each individual bird trying to track the location of only seven other birds.
+
+Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of `r birds` randomly placed birds. Each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one 'moment' in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time.
+
+```{r, echo=F, message=FALSE, warning=F,fig.height=10, fig.width=8}
 birds_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird>0))+
   # geom_point(aes(x=x,y=y,color=factor(bird),group=factor(bird),alpha=iteration))+
   geom_spoke(aes(x=x,y=y,color=factor(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
@@ -30,4 +32,28 @@ birds_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird>0))+
 
 animate(birds_plot,nframes = iterations*2,duration = iterations/10,end_pause = 10,renderer = gifski_renderer())  
 
+```
+
+Alternatively, we can focus on the journey of one individual -- the bird that starts farthest to the left.
+
+```{r, echo=F, message=FALSE, warning=F,fig.height=10, fig.width=8}
+
+example_bird=first(all_birds2$bird[all_birds2$x==max(all_birds2$x)])
+
+bird_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird==example_bird))+
+  # geom_point(aes(x=x,y=y,color=factor(bird),group=factor(bird),alpha=iteration))+
+  geom_spoke(aes(x=x,y=y,color=factor(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
+  guides(color='none')+
+  xlim(c(min(all_birds$x),max(all_birds$y)))+
+  ylim(c(min(all_birds$y),max(all_birds$y)))+
+  transition_states(iteration)+
+  ease_aes("linear")+
+  theme_void()+
+  shadow_wake(wake_length = 20/iterations,wrap=F)+
+  theme(axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank())+
+  ggtitle("Moment {closest_state}")
+
+animate(bird_plot,nframes = iterations*2,duration = iterations/10,end_pause = 10,renderer = gifski_renderer())  
 ```
