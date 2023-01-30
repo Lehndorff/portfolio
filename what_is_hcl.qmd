@@ -1,0 +1,64 @@
+---
+title: "What is HCL?"
+editor: visual
+author:
+- name: Hans Lehndorff
+---
+
+HCL is a colorspace which is better than RGB for creating perceptually uniform colors.
+
+-   Hue: wavelength (color)
+
+-   Chroma: purity, dullness
+
+-   Luminance: from black to white
+
+The polarLUV function from the colorspace package, takes hue, chroma and luminance inputs and returns a color hexcode (via the hex function). Based on testing, polarLUV:
+
+-   takes hue as a value between -134 and 107
+
+-   luminance of 0 = black
+
+-   negative chroma exist, but I find their interpretation less intuitive
+
+-   there are many impossible combinations of HCL.
+
+This process goes through a range of hues and generates a sample combinations of chroma and luminance.
+
+```{r, echo=T, message=F, warning=F}
+library(tidyverse)
+library(colorspace)
+
+# -134:107
+
+output<-NULL
+for(h in seq(-134,107,16)){
+  # print(h)
+  z=expand.grid(
+  l=seq(1,150,.1),#
+  c=seq(-200,200,.1) #
+  ) %>% 
+    mutate(
+      h=h,
+      color=hex(polarLUV(H=h,C=c,L=l))
+      ) %>% 
+    filter(!is.na(color)) %>% #
+    slice_sample(n=10000,replace = T) %>% 
+    distinct()
+  
+  output<-bind_rows(output,z)
+  
+}
+
+```
+
+A plot showing the impact on color of chroma and luminance on a selection of hues.
+
+```{r,fig.height=6, fig.width=10}
+ggplot(output)+
+  geom_point(aes(x=l,y=c),color=output$color)+
+  geom_hline(yintercept = 0, linetype=2)+
+  theme_minimal()+
+  labs(x="Luminance",y="Chroma",title="Impact of Luminance and Chroma variation for a sample of Hues")+
+  facet_wrap(h~.)
+```

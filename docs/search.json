@@ -14,6 +14,13 @@
     "text": "Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of 20 randomly placed birds. Each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one ‘moment’ in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time."
   },
   {
+    "objectID": "what_is_hcl.html",
+    "href": "what_is_hcl.html",
+    "title": "What is HCL?",
+    "section": "",
+    "text": "Hue: wavelength (color)\nChroma: purity, dullness\nLuminance: from black to white\n\nThe polarLUV function from the colorspace package, takes hue, chroma and luminance inputs and returns a color hexcode (via the hex function). Based on testing, polarLUV:\n\ntakes hue as a value between -134 and 107\nluminance of 0 = black\nnegative chroma exist, but I find their interpretation less intuitive\nthere are many impossible combinations of HCL.\n\nThis process goes through a range of hues and generates a sample combinations of chroma and luminance.\n\nlibrary(tidyverse)\nlibrary(colorspace)\n\n# -134:107\n\noutput<-NULL\nfor(h in seq(-134,107,16)){\n  # print(h)\n  z=expand.grid(\n  l=seq(1,150,.1),#\n  c=seq(-200,200,.1) #\n  ) %>% \n    mutate(\n      h=h,\n      color=hex(polarLUV(H=h,C=c,L=l))\n      ) %>% \n    filter(!is.na(color)) %>% #\n    slice_sample(n=10000,replace = T) %>% \n    distinct()\n  \n  output<-bind_rows(output,z)\n  \n}\n\nA plot showing the impact on color of chroma and luminance on a selection of hues.\n\nggplot(output)+\n  geom_point(aes(x=l,y=c),color=output$color)+\n  geom_hline(yintercept = 0, linetype=2)+\n  theme_minimal()+\n  labs(x=\"Luminance\",y=\"Chroma\",title=\"Impact of Luminance and Chroma variation for a sample of Hues\")+\n  facet_wrap(h~.)"
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
