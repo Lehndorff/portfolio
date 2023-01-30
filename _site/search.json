@@ -12,12 +12,5 @@
     "title": "Swifts",
     "section": "",
     "text": "Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of 20 randomly placed birds. Each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one ‘moment’ in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Evergreen Economics Resume"
   }
 ]

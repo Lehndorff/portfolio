@@ -2,21 +2,9 @@
 title: "Swifts"
 ---
 
-If you haven\'t seen it before, I highly recommend viewing the
-annual migration of [Vaux\'s swifts](https://audubonportland.org/go-outside/swift-watch/) at Chapman Elementary in northwest Portland. On
-evenings in the fall, up to 10,000 swifts roost in the chimney of the school.
-Their movements when assembled, are very similar to that of starling groupings
-in Europe. According to [research](https://www.princeton.edu/news/2013/02/07/birds-feather-track-seven-neighbors-flock-together) from Princeton University, these formations are based on each
-individual bird trying to track the location of only seven other birds.
+If you haven't seen it before, I highly recommend viewing the annual migration of [Vaux's swifts](https://audubonportland.org/go-outside/swift-watch/) at Chapman Elementary in northwest Portland. On evenings in the fall, up to 10,000 swifts roost in the chimney of the school. Their movements, when assembled, are very similar to that of starling groupings in Europe. According to [research](https://www.princeton.edu/news/2013/02/07/birds-feather-track-seven-neighbors-flock-together) from Princeton University, these formations are based on each individual bird trying to track the location of only seven other birds.
 
-Ever since seeing the swifts the first time, I thought it would be
-fun to simulate the behavior of these birds. This interactive graphic is an
-animation that gives an overhead view of a simulation of 20 randomly placed
-birds where each bird is trying to move to the midpoint of its seven nearest
-neighbors. Each frame of the simulation represents one \'moment\' in which each
-bird attempts to re-calibrate its position. Animation is the perfect way to
-visually the behavior of these simulated birds as it allows the viewer to see the
-clustering and movements of the birds in general over time.
+Ever since seeing the swifts the first time, I thought it would be fun to simulate the behavior of these birds. This interactive graphic is an animation that gives an overhead view of a simulation of 20 randomly placed birds. Each bird is trying to move to the midpoint of its seven nearest neighbors. Each frame of the simulation represents one 'moment' in which each bird attempts to re-calibrate its position. Animation is the perfect way to visually the behavior of these simulated birds as it allows the viewer to see the clustering and movements of the birds in general over time.
 
 ```{r, echo=F, message=FALSE, warning=F}
 library(ggplot2)

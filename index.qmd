@@ -2,10 +2,10 @@
 title: "Portfolio"
 ---
 
-Still the required index file.
+Home page! More to come!
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Check out my other pages:
 
-```{r}
+-   [Swifts](https://lehndorff.github.io/portfolio/page1.html)
 
-```
+-   [About me](https://lehndorff.github.io/portfolio/about.html)
