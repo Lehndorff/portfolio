@@ -39,3 +39,7 @@ vignettes/*.pdf
 .Renviron
 
 /.quarto/
+/data/*
+/scripts/swift_viz.R
+
+
