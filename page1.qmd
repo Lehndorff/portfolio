@@ -21,14 +21,15 @@ Ever since seeing the swifts the first time, I thought it would be fun to simula
 #| echo: true
 #| message: false
 #| warning: false
-#| fig.height: 10
 #| fig.width: 8
 #| cache: true
 
 birds_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird>0))+
   # geom_point(aes(x=x,y=y,color=factor(bird),group=factor(bird),alpha=iteration))+
-  geom_spoke(aes(x=x,y=y,color=factor(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
+  geom_spoke(aes(x=x,y=y,color=(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
   guides(color='none')+
+  scale_color_viridis_b()+
+  coord_equal()+
   transition_states(iteration)+
   ease_aes("linear")+
   theme_void()+
@@ -42,32 +43,54 @@ animate(birds_plot,nframes = iterations*2,duration = iterations/10,end_pause = 1
 
 ```
 
-Alternatively, we can focus on the journey of one individual -- the bird that starts farthest to the left.
+Alternatively, we can focus on the journey of one individual -- the bird that starts farthest to the right.
 
 ```{r animation_2}
 #| echo: false
 #| message: false
 #| warning: false
-#| fig.height: 10
 #| fig.width: 8
 #| cache: true
 
-example_bird=first(all_birds2$bird[all_birds2$x==max(all_birds2$x)])
+example_bird=first(all_birds2$bird[all_birds2$x==max(all_birds2$x[all_birds$iteration==0])&all_birds$iteration==0])
 
 bird_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird==example_bird))+
   # geom_point(aes(x=x,y=y,color=factor(bird),group=factor(bird),alpha=iteration))+
   geom_spoke(aes(x=x,y=y,color=factor(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
   guides(color='none')+
-  xlim(c(min(all_birds$x),max(all_birds$y)))+
+  xlim(c(min(all_birds$x),max(all_birds$x)))+
   ylim(c(min(all_birds$y),max(all_birds$y)))+
   transition_states(iteration)+
   ease_aes("linear")+
   theme_void()+
+  coord_equal()+
   shadow_wake(wake_length = 20/iterations,wrap=F)+
   theme(axis.ticks = element_blank(),
         axis.title = element_blank(),
         axis.text = element_blank())+
   ggtitle("Moment {closest_state}")
 
-animate(bird_plot,nframes = iterations*2,duration = iterations/10,end_pause = 10,renderer = gifski_renderer())  
+animate(bird_plot,nframes = iterations*2,duration = iterations/10,end_pause = 10,renderer = gifski_renderer())
+```
+
+Here is the journey of all swifts at once
+
+```{r plot_3}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig.width: 8
+#| cache: true
+
+ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird>0))+
+  # geom_point(aes(x=x,y=y,color=factor(bird),group=factor(bird),alpha=iteration))+
+  geom_spoke(aes(x=x,y=y,color=(bird),group=factor(bird),angle=a2),radius=1,arrow=arrow(type = "closed",length = unit(3/range,"inches")))+
+  guides(color='none')+
+  scale_color_viridis_b()+
+  coord_equal()+
+  theme_void()+
+  theme(axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank())
+
 ```

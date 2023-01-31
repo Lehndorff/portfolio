@@ -1,6 +1,13 @@
 ---
-title: "About"
+title: "About me"
+author: "Hans Lehndorff"
 date-modified: "today"
+about: 
+  template: trestles
 ---
 
+I am currently a consultant at [Evergreen Economics](evergreenecon.com).
+
 [Evergreen Economics Resume](https://evergreenecon.com/wp-content/uploads/2021/06/Lehndorff-Resume_June2021.pdf)
+
+I started at Evergreen in 2016 after graduating from Willamette University.
