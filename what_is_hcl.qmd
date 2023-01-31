@@ -3,6 +3,7 @@ title: "What is HCL?"
 editor: visual
 author:
 - name: Hans Lehndorff
+date-modified: "today"
 ---
 
 HCL is a colorspace which is better than RGB for creating perceptually uniform colors.
@@ -25,7 +26,12 @@ The polarLUV function from the colorspace package, takes hue, chroma and luminan
 
 This process goes through a range of hues and generates a sample combinations of chroma and luminance.
 
-```{r, echo=T, message=F, warning=F}
+```{r some_data}
+#| code-fold: false
+#| echo: true
+#| message: false
+#| warning: false
+
 library(tidyverse)
 library(colorspace)
 
@@ -54,7 +60,7 @@ for(h in seq(-134,107,16)){
 
 A plot showing the impact on color of chroma and luminance on a selection of hues.
 
-```{r,fig.height=6, fig.width=10}
+```{r hcl_plot,fig.height=6, fig.width=10}
 ggplot(output)+
   geom_point(aes(x=l,y=c),color=output$color)+
   geom_hline(yintercept = 0, linetype=2)+

@@ -11,12 +11,19 @@ website:
       - page1.qmd
       - what_is_hcl.qmd
       - about.qmd
+  page-footer:
+    left: 
+      - text: "Hello!"
 
 format:
   html:
-    theme: cosmo
+    self-contained: true
+    code-fold: true
+    theme:
+      dark: darkly
+      light: flatly
     css: styles.css
     toc: true
-
+    
 editor: visual
 

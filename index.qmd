@@ -1,8 +1,11 @@
 ---
-title: "Portfolio"
+title: "Welcome!"
+date-modified: "today"
 ---
 
-Home page! More to come!
+More to come!
+
+------------------------------------------------------------------------
 
 Check out my other pages:
 
