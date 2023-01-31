@@ -6,6 +6,8 @@ Home page! More to come!
 
 Check out my other pages:
 
--   [Swifts](https://lehndorff.github.io/portfolio/page1.html)
+-   A simulation of [swifts](https://lehndorff.github.io/portfolio/page1.html)
+
+-   [Something](https://lehndorff.github.io/portfolio/what_is_hcl.html) that helped me better understand HCL
 
 -   [About me](https://lehndorff.github.io/portfolio/about.html)
