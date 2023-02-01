@@ -73,7 +73,7 @@ bird_plot<-ggplot(all_birds2 %>% arrange(iteration) %>% filter(bird==example_bir
 animate(bird_plot,nframes = iterations*2,duration = iterations/10,end_pause = 10,renderer = gifski_renderer())
 ```
 
-Here is the journey of all swifts at once
+Here is the journey of all swifts at once.
 
 ```{r plot_3}
 #| echo: false
