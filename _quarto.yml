@@ -9,7 +9,8 @@ website:
       - href: index.qmd
         text: Home
       - page1.qmd
-      - tidy_wcc.qmd
+      - href: tidy_wwc.qmd
+        text: Tidy Tuesday
       - what_is_hcl.qmd
       - about.qmd
   page-footer:
