@@ -9,6 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - page1.qmd
+      - tidy_wcc.qmd
       - what_is_hcl.qmd
       - about.qmd
   page-footer:
@@ -27,4 +28,7 @@ format:
     toc: true
     
 editor: visual
+
+execute: 
+  cache: true
 

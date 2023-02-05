@@ -13,4 +13,6 @@ Check out my other pages:
 
 -   [Something](https://lehndorff.github.io/portfolio/what_is_hcl.html) that helped me better understand HCL
 
+-   Analysis of the FIFA Women's World Cup inspired by Tidy Tuesday
+
 -   [About me](https://lehndorff.github.io/portfolio/about.html)

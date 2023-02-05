@@ -1,0 +1,127 @@
+---
+title: "Tidy Tuesday and the FIFA Women's World Cup"
+date-modified: "today"
+author:
+- name: Hans Lehndorff
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+
+wwc_outcomes <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-09/wwc_outcomes.csv")
+codes <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-09/codes.csv")
+
+```
+
+Inspired by [the work of \@tanya_shapiro](https://twitter.com/tanya_shapiro/status/1148628053003821057/photo/1) and [the work of DomDF](https://github.com/DomDF/TidyTuesdays/blob/master/2019_week28.R) for Tidy Tuesday on July 7, 2019, I have analyzed the results from the FIFA Women's World Cup.
+
+In particular this analysis focuses on how the United States compares to three other nations that have made the World Cup Final at least twice -- Germany, Japan and Norway.
+
+```{r analysis}
+#| message: false
+#| warning: false
+
+agg_dat<-wwc_outcomes %>% 
+  group_by(team,round) %>% 
+  summarise(n=n(),mean=mean(score)) %>% 
+  filter(round!="Third Place Playoff") %>% 
+  filter("Final"%in%round) %>% 
+  group_by(team) %>% 
+  filter(n[round=="Final"]>1)
+
+agg_dat$round<-factor(agg_dat$round,levels = c("Group","Round of 16","Quarter Final","Semi Final","Final"))
+
+h2h<-wwc_outcomes %>% 
+  filter(team%in%agg_dat$team) %>% 
+  group_by(year,yearly_game_id) %>% 
+  filter(n()==2)
+
+output<-NULL
+for(i in unique(h2h$team)){
+  this_summary<-h2h %>% 
+    group_by(year,yearly_game_id) %>% 
+    filter(i%in%team) %>%
+    group_by(this_team=i,team) %>% 
+    summarise(
+      w=sum(win_status=="Won"),
+      l=sum(win_status=="Lost"),
+      d=sum(win_status=="Tie")) %>% 
+    mutate(
+      pct=l/(w+l)
+    )
+  output<-bind_rows(
+    this_summary,
+    output
+  )
+  
+}
+
+final_summary<-wwc_outcomes %>% 
+  filter(round=="Final") %>% 
+  group_by(team) %>% 
+  summarise(apps=n(),first=min(year),goals=sum(score)) %>% 
+  arrange(-goals)
+
+usa_summary<-wwc_outcomes %>% 
+  group_by(year,yearly_game_id) %>% 
+  filter("USA"%in%team) %>% 
+  group_by(team) %>% 
+  summarise(
+    w=sum(win_status=="Won"),
+    l=sum(win_status=="Lost"),
+    d=sum(win_status=="Tie")
+  )
+
+```
+
+While each of these teams have storied histories at the World Cup, its the United States that scores the most goals on average in the game that matters the most -- the Final. In fact, the `r  final_summary$goals[final_summary$team=='USA']` goals scored by the United States in World Cup Finals is nearly as many as all other nations combined (`r sum(final_summary$goals[final_summary$team!='USA'])`).
+
+```{r plot1}
+#| message: false
+#| warning: false
+#| #| fig.width: 10
+
+agg_dat %>% 
+  left_join(codes) %>% 
+ggplot(aes(x=round,y=mean,color=country))+
+  geom_point(size=2.5)+
+  geom_line(aes(group=team),size=1.5)+
+  theme_minimal()+
+  geom_hline(yintercept = 0,color=NA)+
+  theme(legend.position = 'bottom')+
+  scale_color_manual(values=rev(c("black","#00205B","#BC002D","#FFCC00")))+
+  labs(x="Round of Tournament",y="Average Goals per Round",color="Country",
+       title="Winning Time",subtitle = "The United States scores the most goals in World Cup Finals")
+
+
+```
+Further, when competing against these other historic powers in women's international soccer, the United States has dominated, winning 75% of it matches against Germany, Japan, and Norway. While dominant, 75% is actually the lowest winning percentage that the United States has against an individual opponent and only five teams (Germany, Japan, Norway, Brazil, and Sweden) have ever beaten the United States in a World Cup match, and none have done so twice. 
+```{r plot2}
+#| message: false
+#| warning: false
+#| #| fig.width: 10
+
+output %>% 
+  left_join(codes) %>% 
+  filter(this_team!=team) %>% 
+  ggplot()+
+  geom_col(aes(x=country,y=pct,fill=country))+
+  theme_minimal()+
+  theme(
+    legend.position = 'bottom',
+    strip.background = element_rect(fill="gray80"),
+    strip.placement = 'left',
+    strip.text.y.left = element_text(angle = 0))+
+  scale_y_continuous(labels = scales::percent,expand = c(0,0,.05,0))+
+  scale_fill_manual(values=rev(c("black","#00205B","#BC002D","#FFCC00")))+
+  coord_flip()+
+  facet_grid(paste(this_team,"V.")~.,scale="free_y",switch = "y")+
+  guides(fill='none')+
+  labs(x=NULL,y="Winning Percentage (excluding draws)",
+       title="Better v. Best",subtitle = "The United States wins 75% of its matches against other top teams")
+
+```

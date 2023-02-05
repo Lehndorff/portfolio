@@ -1,0 +1,70 @@
+---
+title: "Conditional Probability"
+author: "Hans Lehndorff"
+contributor: "DATA 505: Applied Machine Learning -- Professor Hendrik Orem"
+date-modified: "today"
+code-fold: false
+---
+
+```{r setup, include=FALSE}
+#| echo: false
+#| warnings: false
+#| messages: false
+
+library(tidyverse)
+library(ggplot2)
+
+```
+
+There are three cards. One with two red sides, one with two black sides, one with a black side and a red site.
+
+A random card is placed in front of you -- it has a red face. What are the odds that the other side of the card is black?
+
+Intuitively, I would expect the answer to be 50% -- there are only two possible options red or black. Given that we are not looking at the black/black card the odds that the other side is black (this is the red/black card) and the odds that the other side is red (this is the red/red card) should be equally likely.
+
+This is a simulation of this situation as a means of testing Bayes Theorem for conditional probabilities.
+
+First, there are six possibilities for how the cards could be oriented -- each of the three card with one of two sides showing.
+
+```{r options}
+#| echo: true
+#| messages: false
+#| warnings: false
+
+
+cards<-data.frame(
+  card=1:6,
+  face=c("R","R","R","B","B","B"),
+  back=c("R","R","B","R","B","B"),
+  card_num=c(1,1,2,2,3,3),
+  orientation=rep(c("A","B"),3)
+  )
+
+cards
+
+```
+
+These cards can then be randomly sampled 1,000,000 times.
+
+```{r samples}
+#| echo: true
+#| messages: false
+#| warnings: false
+
+sampled<-data.frame(card=sample(1:6,1000000,replace=T)) %>% 
+  left_join(cards)
+```
+
+To calculate the probability that the other side of the card is black given that we are looking at a red side, we first need to filter our random samples down to the cases where a red card is face up. Then count up the frequency with which black and red each appear as the back side of the card.
+
+```{r result, message=FALSE}
+
+sampled %>% 
+  filter(face=="R") %>% 
+  group_by(back) %>% 
+  summarise(n=n()) %>% 
+  mutate(pct=scales::percent(n/sum(n)))
+
+```
+
+Rather than being the expected 50% probability, the odds of having the other side be black is only 1/3.
