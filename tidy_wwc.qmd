@@ -1,4 +1,8 @@
 ---
+format:
+  html:
+    theme: flatly
+      
 title: "Tidy Tuesday and the FIFA Women's World Cup"
 date-modified: "today"
 author:
@@ -11,6 +15,7 @@ author:
 #| warning: false
 
 library(tidyverse)
+library(DT)
 
 wwc_outcomes <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-09/wwc_outcomes.csv")
 codes <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-09/codes.csv")
@@ -99,7 +104,9 @@ ggplot(aes(x=round,y=mean,color=country))+
 
 
 ```
-Further, when competing against these other historic powers in women's international soccer, the United States has dominated, winning 75% of it matches against Germany, Japan, and Norway. While dominant, 75% is actually the lowest winning percentage that the United States has against an individual opponent and only five teams (Germany, Japan, Norway, Brazil, and Sweden) have ever beaten the United States in a World Cup match, and none have done so twice. 
+
+Further, when competing against these other historic powers in women's international soccer, the United States has dominated, winning 75% of it matches against Germany, Japan, and Norway. While dominant, 75% is actually the lowest winning percentage that the United States has against an individual opponent and only five teams (Germany, Japan, Norway, Brazil, and Sweden) have ever beaten the United States in a World Cup match, and none have done so twice.
+
 ```{r plot2}
 #| message: false
 #| warning: false
@@ -123,5 +130,33 @@ output %>%
   guides(fill='none')+
   labs(x=NULL,y="Winning Percentage (excluding draws)",
        title="Better v. Best",subtitle = "The United States wins 75% of its matches against other top teams")
+
+```
+
+The results of ever FIFA Women's World Cup played by the United States. The United States has been held scoreless just five times.
+
+```{r table_b}
+
+table_data<-wwc_outcomes %>% 
+  filter(team=="USA") %>% 
+  left_join(
+    wwc_outcomes %>% 
+      filter(team!="USA") %>% 
+      select(-round,-win_status) %>% 
+        left_join(codes),
+    by=c("year","yearly_game_id"),
+    suffix=c("_usa","_opp")) %>% 
+  select(Year=year,Round=round,Opponent=country,`USA Score`=score_usa,`Opponnent Score`=score_opp,Result=win_status) 
+
+table_data<-table_data %>% 
+  datatable(filter = "top", extensions = c("Scroller",
+    "Buttons"), options = list(deferRender = TRUE, scrollY = 400, scroller = TRUE,
+    dom = "Bfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))) %>% 
+  formatStyle(
+    colnames(table_data),
+    backgroundColor = "white"
+    )
+
+table_data
 
 ```

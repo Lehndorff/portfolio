@@ -4,6 +4,17 @@ project:
 
 website:
   title: "Portfolio"
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Pages"
+        contents:
+          - index.qmd
+          - page1.qmd
+          - tidy_wwc.qmd
+          - about.qmd
+          
   navbar:
     left:
       - href: index.qmd
@@ -11,20 +22,23 @@ website:
       - page1.qmd
       - href: tidy_wwc.qmd
         text: Tidy Tuesday
+        icon: bar-chart
       - what_is_hcl.qmd
-      - about.qmd
+      - href: about.qmd
+        icon: file-person
   page-footer:
     left: 
       - text: "Hello!"
 
 format:
   html:
-    self-contained: true
+    # self-contained: true
+    embed-resources: true
     code-fold: true
     code-summary: 'Show code'
     theme:
-      dark: darkly
       light: flatly
+      dark: darkly
     css: styles.css
     toc: true
     
@@ -32,4 +46,6 @@ editor: visual
 
 execute: 
   cache: true
+  messages: false
+  warning: false
 
