@@ -10,10 +10,16 @@ website:
     contents:
       - section: "Pages"
         contents:
-          - index.qmd
           - page1.qmd
           - tidy_wwc.qmd
-          - about.qmd
+      - section: "Colorful Circles"
+        contents: 
+          - href: colorful_circles.qmd
+            text: "Generation"
+      - section: "Notes"
+        contents: 
+          - what_is_hcl.qmd
+          - conditional_probability.qmd
           
   navbar:
     left:

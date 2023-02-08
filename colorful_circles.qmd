@@ -46,6 +46,8 @@ Offspring will have the average color (in terms of RGB) of the two parent circle
 
 # Result
 
+![Colorful circles animation](data/colorful_circles.gif){fig-align="center"}
+
 ```{r animation}
  
 # tree_plot<-ggplot(tree_dat)+

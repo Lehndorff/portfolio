@@ -308,3 +308,32 @@ save(list = ls(),file="data/arbor_color.rdata")
 #   summarise(trees=n_distinct(tree)) %>% 
 #   ggplot()+
 #   geom_line(aes(x=year,y=trees))
+
+# start<-proc.time()
+# input=80
+# tree_plot<-tree_dat %>% 
+#   filter(year<=input) %>% 
+#   ggplot()+
+# geom_circle(aes(x0=x,y0=y,r=t,fill=factor(tree)),alpha=1)+
+# scale_fill_manual(values = tree_dat$color)+
+# coord_fixed(xlim = x_range,ylim = y_range)+
+# guides(fill='none')+
+# theme_void()+
+# transition_states(year)+
+# ease_aes("linear")
+# 
+# animate(tree_plot,nframes = input*2,duration = input/10,end_pause = 1,renderer = gifski_renderer())
+# proc.time()-start
+# 
+# z<-data.frame(x=c(10,20,40,80),y=c(31,87,283,1183)) %>% 
+#   mutate(x2=x^2)
+# 
+# mod=summary(lm("y~x2",data=z))$coefficients %>% data.frame()
+# 
+# ggplot(z)+
+#   geom_point(aes(x=x,y=y))+
+#   geom_function(fun = function(x) mod$Estimate[1]+x^2*mod$Estimate[2])
+# 
+# (mod$Estimate[1]+1000^2*mod$Estimate[2])/60/60
+
+
