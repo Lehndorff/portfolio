@@ -42,4 +42,4 @@ vignettes/*.pdf
 /data/*
 /scripts/swift_viz.R
 
-
+.DS_Store
