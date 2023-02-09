@@ -1,6 +1,12 @@
 ---
 title: "Welcome!"
 date-modified: "today"
+comments: 
+  utterances:
+    repo: Lehndorff/portfolio
+    issue-term: title
+    label: Utterances
+    theme: github-dark
 ---
 
 More to come!

@@ -1,0 +1,163 @@
+---
+title: "Analysis of Colorful Bubbles"
+author: "Hans Lehndorff"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(gganimate)
+library(ggforce)
+library(useful)
+
+load("data/arbor_color.rdata")
+
+```
+
+A different post generated a `r scales::comma(years)` year simulation of the lives of colorful Bubbles given some set parameter. Here was the result:
+
+![Colorful Bubbles animation](data/colorful_Bubbles.gif){fig-align="center"}
+
+# Analysis
+
+## Summary Statistics
+
+### Observed Lifespan
+
+```{r oblife}
+max_age<-tree_dat %>% 
+  group_by(tree) %>% 
+  filter(age==max(age)) 
+median_age<-round(median(max_age$age))
+
+max_age %>% 
+  ggplot()+
+  geom_histogram(aes(x=age),binwidth = 1)+
+  # geom_text(data=NULL,x=median_age,y=Inf,label=paste("Median Age:\n",median_age))+
+  theme_minimal()+
+  scale_y_continuous(labels = scales::comma)+
+  geom_vline(xintercept = median_age,color="red",linetype=2)+
+  labs(x="Age",y="Count of trees by age at death")
+
+```
+
+### Population over time
+
+```{r pot}
+tree_dat %>%
+  group_by(year) %>%
+  summarise(trees=n_distinct(tree)) %>%
+  ggplot()+
+  geom_line(aes(x=year,y=trees))+
+  geom_hline(yintercept = 0,color=NA)+
+  theme_minimal()+
+  scale_x_continuous(labels = scales::comma)+
+  labs(y="Colorful Bubbles",x="Year")
+```
+
+### Common Colors
+
+```{r colors}
+tree_dat %>% 
+  ungroup() %>% 
+  mutate(primary_color=case_when(
+    green>blue&green>red~"Green",
+    blue>=green&blue>red~"Blue",
+    red>=green&red>=blue~"Red"
+  )) %>% 
+  ggplot()+
+  geom_bar(aes(x=year,fill=primary_color),width = 1,position = "fill")+
+  scale_fill_manual(values = c("blue","green3","red"))+
+  scale_x_continuous(labels = scales::comma)+
+  scale_y_continuous(labels = scales::percent)+
+  theme_minimal()+
+  labs(x="Year",y="Percent of Trees",fill="Predominant Color")+
+  theme(legend.position = 'bottom')
+
+
+```
+
+### Colors over time
+
+```{r colorado}
+common_color<-tree_dat %>% 
+  group_by(year) %>% 
+  summarise(
+    n=n(),
+    colors=n_distinct(color),
+    red=mean(red),
+    blue=mean(blue),
+    green=mean(green)
+    ) %>% 
+  arrange(-year)
+common_color$color<-rgb(common_color$red,common_color$green,common_color$blue)
+
+common_color %>% 
+  ggplot()+
+  geom_col(aes(x=year,y=colors/n*100,fill=color),width=1)+
+  guides(fill='none')+
+  scale_fill_manual(values = unique(common_color$color))+
+  scale_x_continuous(labels = scales::comma)+
+  theme_minimal()+
+  labs(x="Year",y="Unique colors per 100 trees")
+
+common_color %>% 
+  pivot_longer(red:green) %>% 
+  ggplot()+
+  geom_line(aes(x=year,y=value,color=stringr::str_to_title(name)))+
+  scale_color_manual(values = c("blue","green3","red"))+
+  labs(x="Year",y="Average Saturation of Color",color="Color")+
+  scale_y_continuous(labels = scales::percent)+
+  scale_x_continuous(labels = scales::comma)+
+  theme_minimal()+
+  theme(
+    legend.position = "bottom"
+  )
+
+```
+
+### Common Locations
+
+```{r heat}
+tree_dat %>% 
+  ggplot()+
+  geom_bin2d(aes(x=x,y=y))+
+  scale_fill_viridis_c(labels=scales::comma)+
+  theme_void()+
+  theme(legend.position = 'bottom')+
+  coord_fixed()+
+  labs(fill="Count of Colorful Bubbles")
+
+```
+
+## Survival Analysis
+
+```{r km_curves}
+library(survival)
+library(survminer)
+
+max_age_color<-max_age %>% 
+  group_by(tree) %>% 
+  filter(age==max(age)) %>% 
+  ungroup() %>% 
+  mutate(primary_color=case_when(
+    green>blue&green>red~"Green",
+    blue>=green&blue>red~"Blue",
+    red>=green&red>=blue~"Red"
+  ))
+
+km=survfit(Surv(max_age_color$age,rep(1,nrow(max_age_color)))~max_age_color$primary_color)
+
+ggsurvplot(fit=km, data=max_age_color,palette=c("blue","green3","red"),
+           legend = "bottom", 
+           legend.title = "Predominant Color",
+           legend.labs = c("Blue", "Green","Red"),
+risk.table = F,conf.int=F) +
+    labs(
+        title="Survival Curve for Colorful Bubbles",
+        x="Years"
+    ) 
+
+
+
+```

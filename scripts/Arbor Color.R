@@ -303,11 +303,11 @@ save(list = ls(),file="data/arbor_color.rdata")
 #   
 # }
 # 
-# tree_dat %>% 
-#   group_by(year) %>% 
-#   summarise(trees=n_distinct(tree)) %>% 
-#   ggplot()+
-#   geom_line(aes(x=year,y=trees))
+tree_dat %>%
+  group_by(year) %>%
+  summarise(trees=n_distinct(tree)) %>%
+  ggplot()+
+  geom_line(aes(x=year,y=trees))
 
 # start<-proc.time()
 # input=80

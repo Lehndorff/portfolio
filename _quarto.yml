@@ -4,6 +4,12 @@ project:
 
 website:
   title: "Portfolio"
+  comments: 
+    utterances:
+      repo: Lehndorff/portfolio
+      issue-term: title
+      label: Utterances
+      theme: github-dark
   sidebar:
     style: "docked"
     search: true
@@ -11,11 +17,14 @@ website:
       - section: "Pages"
         contents:
           - page1.qmd
-          - tidy_wwc.qmd
-      - section: "Colorful Circles"
+          - href: tidy_wwc.qmd
+            text: "FIFA Women's World Cup"
+      - section: "Colorful Bubbles"
         contents: 
           - href: colorful_circles.qmd
             text: "Generation"
+          - href: colorcir_analysis.qmd
+            text: "Analysis"
       - section: "Notes"
         contents: 
           - what_is_hcl.qmd

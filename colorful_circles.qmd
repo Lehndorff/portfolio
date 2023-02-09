@@ -1,5 +1,5 @@
 ---
-title: "Colorful Circles"
+title: "Colorful Bubbles"
 author: "Hans Lehndorff"
 ---
 
@@ -16,23 +16,23 @@ load("data/arbor_color.rdata")
 
 # Parameters
 
-This is a <u>random simulation</u> of colorful circles. Each frame represents a "year" and the simulation last `r scales::comma(years)` years.
+This is a random simulation of colorful bubbles. Each frame represents a "year" and the simulation last `r scales::comma(years)` years.
 
 ## Growth
 
-Each circle grows by 1 unit each year and increase by 1 in terms of "age" . At initialization each circle have ages/sizes between 1 and 5.
+Each bubble grows by 1 unit each year and increase by 1 in terms of "age" . At initialization each bubble have ages/sizes between 1 and 5.
 
 ## Death
 
-However there is a chance that each circle will "die off". The odds that a circle dies off is equivalent to age in age + lifespan. In this simulation the lifespan is `r lifespan` years. That is, at an age of `r lifespan` the colorful circles have a 50% of dying off. Circles of age 1 will not die off.
+However there is a chance that each bubble will "pop". The odds that a bubble pops is equivalent to age in age + lifespan. In this simulation the lifespan is `r lifespan` years. That is, at an age of `r lifespan` the colorful bubbles have a 50% of popping. Bubbles of age 1 will not pop.
 
 ## Color
 
-At initialization, each colorful circle is assigned a random color from the RGB colorspace. These colors scale between 0 and 1 and represent the percent that a color is made up of R, G and B.
+At initialization, each colorful bubble is assigned a random color from the RGB colorspace. These colors scale between 0 and 1 in terms of red, green and blue.
 
 ## Replication
 
-In this simulation there is a `r scales::percent(cross_prob)` chance in each year that a colorful circle and it nearest neighbor will produce an offspring. The offspring will:
+In this simulation there is a `r scales::percent(cross_prob)` chance in each year that a colorful bubble and it nearest neighbor will produce a baby bubble. The baby bubble will:
 
 -   have a size of 1
 
@@ -42,16 +42,16 @@ In this simulation there is a `r scales::percent(cross_prob)` chance in each yea
 
 ### Offspring color
 
-Offspring will have the average color (in terms of RGB) of the two parent circles. However, there is a chance, that this color will change. Specifically, for each color (R, G, and B) there is a chance equivalent to the strength of each color that that color will become up to 20% stronger, while the other colors will become 20% weaker. That is, strong greens are likely to become stronger green (and less red, and less blue).
+Baby bubbles will have the average color (in terms of RGB) of the two parent bubbles. However, there is a chance, that this color will change. Specifically, for each color (R, G, and B) there is a chance equivalent to the strength of each color that that color will become up to 20% stronger, while the other colors will become 20% weaker. That is, strong greens are likely to become stronger green (and less red, and less blue).
 
 # Result
 
-![Colorful circles animation](data/colorful_circles.gif){fig-align="center"}
+![Colorful bubbles animation](data/colorful_bubbles.gif){fig-align="center"}
 
 ```{r animation}
  
 # tree_plot<-ggplot(tree_dat)+
-  # geom_circle(aes(x0=x,y0=y,r=t,fill=factor(tree)),alpha=1)+
+  # geom_bubble(aes(x0=x,y0=y,r=t,fill=factor(tree)),alpha=1)+
   # scale_fill_manual(values = tree_dat$color)+
   # coord_fixed(xlim = x_range,ylim = y_range)+
   # guides(fill='none')+

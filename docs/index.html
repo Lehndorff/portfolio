@@ -4008,14 +4008,14 @@ vertical-align: -.125em;
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tidy_wwc.html" class="sidebar-item-text sidebar-link">Tidy Tuesday and the FIFA Women’s World Cup</a>
+  <a href="./tidy_wwc.html" class="sidebar-item-text sidebar-link">FIFA Women’s World Cup</a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Colorful Circles</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Colorful Bubbles</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -4024,6 +4024,11 @@ vertical-align: -.125em;
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./colorful_circles.html" class="sidebar-item-text sidebar-link">Generation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./colorcir_analysis.html" class="sidebar-item-text sidebar-link">Analysis</a>
   </div>
 </li>
       </ul>
@@ -4072,7 +4077,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 7, 2023</p>
+      <p class="date-modified">February 8, 2023</p>
     </div>
   </div>
     
@@ -4341,6 +4346,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="data:application/javascript; charset=utf-8;base64,KCgpPT57Y29uc3QgZT13aW5kb3cubWF0Y2hNZWRpYSgiKHByZWZlcnMtY29sb3Itc2NoZW1lOiBkYXJrKSIpLm1hdGNoZXM/ImdpdGh1Yi1kYXJrIjoiZ2l0aHViLWxpZ2h0Iix0PW5ldyBVUkwobG9jYXRpb24uaHJlZiksbj10LnNlYXJjaFBhcmFtcy5nZXQoInV0dGVyYW5jZXMiKTtuJiYobG9jYWxTdG9yYWdlLnNldEl0ZW0oInV0dGVyYW5jZXMtc2Vzc2lvbiIsbiksdC5zZWFyY2hQYXJhbXMuZGVsZXRlKCJ1dHRlcmFuY2VzIiksaGlzdG9yeS5yZXBsYWNlU3RhdGUodm9pZCAwLGRvY3VtZW50LnRpdGxlLHQuaHJlZikpO2xldCByPWRvY3VtZW50LmN1cnJlbnRTY3JpcHQ7dm9pZCAwPT09ciYmKHI9ZG9jdW1lbnQucXVlcnlTZWxlY3Rvcignc2NyaXB0W3NyY149Imh0dHBzOi8vdXR0ZXJhbmMuZXMvY2xpZW50LmpzIl0sc2NyaXB0W3NyY149Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC9jbGllbnQuanMiXScpKTtjb25zdCBpPXt9O2ZvcihsZXQgZT0wO2U8ci5hdHRyaWJ1dGVzLmxlbmd0aDtlKyspe2NvbnN0IHQ9ci5hdHRyaWJ1dGVzLml0ZW0oZSk7aVt0Lm5hbWUucmVwbGFjZSgvXmRhdGEtLywiIildPXQudmFsdWV9InByZWZlcnJlZC1jb2xvci1zY2hlbWUiPT09aS50aGVtZSYmKGkudGhlbWU9ZSk7Y29uc3QgYT1kb2N1bWVudC5xdWVyeVNlbGVjdG9yKCJsaW5rW3JlbD0nY2Fub25pY2FsJ10iKTtpLnVybD1hP2EuaHJlZjp0Lm9yaWdpbit0LnBhdGhuYW1lK3Quc2VhcmNoLGkub3JpZ2luPXQub3JpZ2luLGkucGF0aG5hbWU9dC5wYXRobmFtZS5sZW5ndGg8Mj8iaW5kZXgiOnQucGF0aG5hbWUuc3Vic3RyKDEpLnJlcGxhY2UoL1wuXHcrJC8sIiIpLGkudGl0bGU9ZG9jdW1lbnQudGl0bGU7Y29uc3Qgcz1kb2N1bWVudC5xdWVyeVNlbGVjdG9yKCJtZXRhW25hbWU9J2Rlc2NyaXB0aW9uJ10iKTtpLmRlc2NyaXB0aW9uPXM/cy5jb250ZW50OiIiO2NvbnN0IG89ZW5jb2RlVVJJQ29tcG9uZW50KGkuZGVzY3JpcHRpb24pLmxlbmd0aDtvPjFlMyYmKGkuZGVzY3JpcHRpb249aS5kZXNjcmlwdGlvbi5zdWJzdHIoMCxNYXRoLmZsb29yKDFlMyppLmRlc2NyaXB0aW9uLmxlbmd0aC9vKSkpO2NvbnN0IGM9ZG9jdW1lbnQucXVlcnlTZWxlY3RvcigibWV0YVtwcm9wZXJ0eT0nb2c6dGl0bGUnXSxtZXRhW25hbWU9J29nOnRpdGxlJ10iKTtpWyJvZzp0aXRsZSJdPWM/Yy5jb250ZW50OiIiLGkuc2Vzc2lvbj1ufHxsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgidXR0ZXJhbmNlcy1zZXNzaW9uIil8fCIiLGRvY3VtZW50LmhlYWQuaW5zZXJ0QWRqYWNlbnRIVE1MKCJhZnRlcmJlZ2luIiwiPHN0eWxlPlxuICAgIC51dHRlcmFuY2VzIHtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIGJveC1zaXppbmc6IGJvcmRlci1ib3g7XG4gICAgICB3aWR0aDogMTAwJTtcbiAgICAgIG1heC13aWR0aDogNzYwcHg7XG4gICAgICBtYXJnaW4tbGVmdDogYXV0bztcbiAgICAgIG1hcmdpbi1yaWdodDogYXV0bztcbiAgICB9XG4gICAgLnV0dGVyYW5jZXMtZnJhbWUge1xuICAgICAgY29sb3Itc2NoZW1lOiBsaWdodDtcbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIGxlZnQ6IDA7XG4gICAgICByaWdodDogMDtcbiAgICAgIHdpZHRoOiAxcHg7XG4gICAgICBtaW4td2lkdGg6IDEwMCU7XG4gICAgICBtYXgtd2lkdGg6IDEwMCU7XG4gICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICBib3JkZXI6IDA7XG4gICAgfVxuICA8L3N0eWxlPiIpO2NvbnN0IGw9ci5zcmMubWF0Y2goL15odHRwczpcL1wvdXR0ZXJhbmNcLmVzfGh0dHA6XC9cL2xvY2FsaG9zdDpcZCsvKVswXSxoPWAke2x9L3V0dGVyYW5jZXMuaHRtbGA7ci5pbnNlcnRBZGphY2VudEhUTUwoImFmdGVyZW5kIixgPGRpdiBjbGFzcz0idXR0ZXJhbmNlcyI+XG4gICAgPGlmcmFtZSBjbGFzcz0idXR0ZXJhbmNlcy1mcmFtZSIgdGl0bGU9IkNvbW1lbnRzIiBzY3JvbGxpbmc9Im5vIiBzcmM9IiR7aH0/JHtuZXcgVVJMU2VhcmNoUGFyYW1zKGkpfSIgbG9hZGluZz0ibGF6eSI+PC9pZnJhbWU+XG4gIDwvZGl2PmApO2NvbnN0IG09ci5uZXh0RWxlbWVudFNpYmxpbmc7ci5wYXJlbnRFbGVtZW50LnJlbW92ZUNoaWxkKHIpLGFkZEV2ZW50TGlzdGVuZXIoIm1lc3NhZ2UiLChlPT57aWYoZS5vcmlnaW4hPT1sKXJldHVybjtjb25zdCB0PWUuZGF0YTt0JiYicmVzaXplIj09PXQudHlwZSYmdC5oZWlnaHQmJihtLnN0eWxlLmhlaWdodD1gJHt0LmhlaWdodH1weGApfSkpfSkoKTsKLy8jIHNvdXJjZU1hcHBpbmdVUkw9Y2xpZW50LmpzLm1hcAo=" repo="Lehndorff/portfolio" issue-term="title" theme="github-dark" crossorigin="anonymous" async>
 </script>
 </div> <!-- /content -->
 <footer class="footer">
