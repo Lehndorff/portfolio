@@ -5,8 +5,8 @@ project:
 website:
   title: "Portfolio"
   comments: 
-    utterances:
-      repo: Lehndorff/portfolio
+    utterances: 
+      repo: quarto-dev/quarto-web
       issue-term: title
       label: Utterances
       theme: github-dark

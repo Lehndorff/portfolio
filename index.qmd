@@ -3,7 +3,7 @@ title: "Welcome!"
 date-modified: "today"
 comments: 
   utterances:
-    repo: Lehndorff/portfolio
+    repo: quarto-dev/quarto-web
     issue-term: title
     label: Utterances
     theme: github-dark
