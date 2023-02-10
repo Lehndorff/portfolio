@@ -7,9 +7,6 @@ website:
   comments: 
     utterances: 
       repo: quarto-dev/quarto-web
-      issue-term: title
-      label: Utterances
-      theme: github-dark
   sidebar:
     style: "docked"
     search: true
@@ -29,7 +26,6 @@ website:
         contents: 
           - what_is_hcl.qmd
           - conditional_probability.qmd
-          
   navbar:
     left:
       - href: index.qmd
@@ -41,9 +37,9 @@ website:
       - what_is_hcl.qmd
       - href: about.qmd
         icon: file-person
-  page-footer:
-    left: 
-      - text: "Hello!"
+  # page-footer:
+  #   left: 
+  #     - text: "Hello!"
 
 format:
   html:

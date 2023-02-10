@@ -4,9 +4,6 @@ date-modified: "today"
 comments: 
   utterances:
     repo: quarto-dev/quarto-web
-    issue-term: title
-    label: Utterances
-    theme: github-dark
 ---
 
 More to come!
