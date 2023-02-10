@@ -4,9 +4,9 @@ project:
 
 website:
   title: "Portfolio"
-  comments: 
-    utterances: 
-      repo: quarto-dev/quarto-web
+  # comments: 
+  #   utterances: 
+  #     repo: quarto-dev/quarto-web
   sidebar:
     style: "docked"
     search: true
@@ -37,9 +37,9 @@ website:
       - what_is_hcl.qmd
       - href: about.qmd
         icon: file-person
-  # page-footer:
-  #   left: 
-  #     - text: "Hello!"
+  page-footer:
+    left:
+      - text: "Hello!"
 
 format:
   html:
@@ -56,7 +56,7 @@ format:
 editor: visual
 
 execute: 
-  # cache: true
+  cache: true
   messages: false
   warning: false
 
