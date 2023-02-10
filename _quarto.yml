@@ -3,10 +3,12 @@ project:
   output-dir: docs
 
 website:
+  comments: 
+    utterances: 
+      repo: quarto-dev/quarto-web
+      theme: dark-blue
+      issue-term: title
   title: "Portfolio"
-  # comments: 
-  #   utterances: 
-  #     repo: quarto-dev/quarto-web
   sidebar:
     style: "docked"
     search: true
@@ -17,13 +19,13 @@ website:
           - href: tidy_wwc.qmd
             text: "FIFA Women's World Cup"
       - section: "Colorful Bubbles"
-        contents: 
+        contents:
           - href: colorful_circles.qmd
             text: "Generation"
           - href: colorcir_analysis.qmd
             text: "Analysis"
       - section: "Notes"
-        contents: 
+        contents:
           - what_is_hcl.qmd
           - conditional_probability.qmd
   navbar:
@@ -44,13 +46,13 @@ website:
 format:
   html:
     # self-contained: true
-    embed-resources: true
+    # embed-resources: true
     code-fold: true
     code-summary: 'Show code'
     theme:
       light: flatly
       dark: darkly
-    # css: styles.css
+    css: styles.css
     toc: true
     
 editor: visual

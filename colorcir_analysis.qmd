@@ -26,18 +26,29 @@ A different post generated a `r scales::comma(years)` year simulation of the liv
 
 ```{r oblife}
 max_age<-tree_dat %>% 
+  filter(!is.na(die)) %>% 
   group_by(tree) %>% 
   filter(age==max(age)) 
 median_age<-round(median(max_age$age))
 
+intervals<-max_age %>%
+  ungroup() %>% 
+  select(left=age,right=age)
+
+fit=fitdistrplus::fitdistcens(data.frame(intervals),"weibull")
+summary(fit)
+plot(fit)
+
 max_age %>% 
   ggplot()+
-  geom_histogram(aes(x=age),binwidth = 1)+
+  geom_density(aes(x=age),binwidth = 1,fill="gray60")+
   # geom_text(data=NULL,x=median_age,y=Inf,label=paste("Median Age:\n",median_age))+
   theme_minimal()+
-  scale_y_continuous(labels = scales::comma)+
+  stat_function(fun = dweibull, args = list(shape = fit$estimate[1], scale = fit$estimate[2]),color="red") +
+  # stat_function(fun = dlnorm, args = list(meanlog = fit$estimate[1], sdlog = fit$estimate[2]),color="red")+
+  scale_y_continuous(labels = scales::percent)+
   geom_vline(xintercept = median_age,color="red",linetype=2)+
-  labs(x="Age",y="Count of trees by age at death")
+  labs(x="Age",y="Percent of trees by age at death")
 
 ```
 
@@ -159,5 +170,5 @@ risk.table = F,conf.int=F) +
     ) 
 
 
-
+survdiff(Surv(max_age_color$age,rep(1,nrow(max_age_color)))~max_age_color$primary_color)
 ```
