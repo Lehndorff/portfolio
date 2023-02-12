@@ -13,17 +13,21 @@ website:
     style: "docked"
     search: true
     contents:
-      - section: "Pages"
+      - section: "Home Energy Usage"
         contents:
-          - page1.qmd
-          - href: tidy_wwc.qmd
-            text: "FIFA Women's World Cup"
+          href: eulr_analysis.qmd
+          text: "Impact of COVID-19"
       - section: "Colorful Bubbles"
         contents:
           - href: colorful_circles.qmd
             text: "Generation"
           - href: colorcir_analysis.qmd
             text: "Analysis"
+      - section: "Other pages"
+        contents:
+          - page1.qmd
+          - href: tidy_wwc.qmd
+            text: "FIFA Women's World Cup"
       - section: "Notes"
         contents:
           - what_is_hcl.qmd

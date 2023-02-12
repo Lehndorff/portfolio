@@ -1,0 +1,240 @@
+---
+title: "Impact on Electricity Usage Caused by the COVID-19 Pandemic"
+author: "Hans Lehndorff"
+contributor: "Cleighton Roberts"
+date-modified: "today"
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(gt)
+library(lubridate)
+
+load('data/NEEA HEMS/final_dataset.rdata')
+load('data/NEEA HEMS/analysis_data.rdata')
+points<-read_csv("data/NEEA HEMS/points.csv")
+sites<-read_csv("data/NEEA HEMS/sites.csv")
+```
+
+# Study Background
+
+[NEEA HEMS](https://neea.org/data/nw-end-use-load-research-project)
+
+# Data Overview
+
+Data represent a diverse geographic area.
+
+```{r map}
+sites_with_mains<-subset(points,circuit_label_type_desc=="Mains")$ee_site_id
+these_eus<-c(
+  "Mains","Hot Tub","Electric Resistance Storage Water Heaters",
+  "Central AC", "Clothes Washer", "Clothes Dryer","Refrigerator/Freezer",
+  "Other","Stove/Oven/Range","Electric Vehicle Charger","Dishwasher",
+  "Ductless Heatpump","Electric Furnace","Ducted Heatpump"
+  )
+
+#Step 1 drop incomplete circuits
+circuit_agg<-analysis_data %>% 
+  filter(ee_site_id%in%sites_with_mains) %>% 
+  group_by(ee_site_id,regname) %>% 
+  summarise(n=n())
+
+retain_circuits<-circuit_agg %>% 
+  filter(n>12755)
+
+analysis_data<-analysis_data %>% 
+  inner_join(retain_circuits %>% select(-n))
+
+#Step 2 drop incomplete site ids NONE TO DROP
+# site_agg<-analysis_data %>% 
+#   group_by(ee_site_id) %>% 
+#   summarise(n=n_distinct(paste(date,hour)))
+
+#Step 3 drop errant days
+day_agg<-analysis_data %>% 
+  group_by(date,hour) %>% 
+  summarise(n=n())
+
+retain_hours<-day_agg %>% 
+  filter(n>625) %>% 
+  filter(!date%in%as.Date(c("2019-09-25","2019-09-26")))
+
+analysis_data<-analysis_data %>% 
+  inner_join(retain_hours %>% select(-n))
+
+weather_stations <- read_csv("data/NEEA HEMS/weather_stations.csv") %>% 
+  mutate(station_id=paste(USAFID,WBAN,sep="-"))
+
+state_maps<-map_data("state",c("oregon","washington","idaho","montana"))
+
+sites_ws<-sites %>% 
+  filter(ee_site_id%in%analysis_data$ee_site_id) %>% 
+  left_join(
+    weather_stations %>% 
+      group_by(station_id) %>% 
+      filter(1:n()==1)
+  ) 
+
+data_for_map<-analysis_data %>% 
+  left_join(sites_ws %>% select(ee_site_id,station_id,LAT,LONG)) %>% 
+  group_by(station_id,LAT,LONG) %>% 
+  summarise(sites=n_distinct(ee_site_id), data=n())
+
+city_labs<-maps::us.cities %>% 
+  filter(country.etc%in%c("OR","ID","WA","MT")) %>% 
+  filter(name%in%c("Seattle WA","Bend OR","Portland OR","Boise ID","Spokane WA","Missoula MT")) %>% 
+  mutate(lat=ifelse(name%in%c("Bend OR"),lat-.5,lat+.5),
+         long=ifelse(name%in%c("Seattle WA"),long-2,long))
+
+ggplot()+
+  geom_polygon(data=state_maps,aes(x=long,y=lat,group=group),fill='white',color='black')+
+  geom_point(data=data_for_map,aes(x=LONG,y=LAT,size=data,fill=sites),color="black",shape=21,alpha=.5)+
+  geom_label(data=city_labs,aes(x=long,y=lat,label=name))+
+  coord_map(xlim = c(-127,-110))+
+  theme_void()+
+  scale_size_continuous(labels = scales::comma)+
+  scale_fill_viridis_b()+
+  theme(
+    legend.position = 'bottom',
+    legend.box= 'horizontal')+
+  labs(fill="Number of Sites",size="Total Observations",
+       title="Geographic Distrobution of NEEA HEMS Data",
+       subtitle = "Behavioral insights from sample of homes across the Pacific Northwest")+
+   guides(fill = guide_colourbar(title.position="top", title.hjust = 0.5),
+         size = guide_legend(title.position="top", title.hjust = 0.5))
+
+
+```
+
+A variety of end uses are represented in the data
+
+```{r eus}
+eu_summary<-analysis_data %>% 
+  left_join(points %>% select(ee_site_id,regname,circuit_label_type_desc)) %>% 
+  group_by(circuit_label_type_desc) %>% 
+  summarise(
+    n=n()
+  ) %>% 
+  filter(!circuit_label_type_desc%in%c("Other","Mains","Gas Furnace (Component)")) %>% 
+  mutate(
+    category=case_when(
+      circuit_label_type_desc%in%c("Central AC","Ducted Heatpump","Ductless Heatpump","Electric Baseboard Heaters","Other Zonal Heat","Electric Furnace") ~ "HVAC",
+      grepl("water heater",circuit_label_type_desc,ignore.case = T) ~ "Water\nHeating",
+      circuit_label_type_desc%in%c("Stove/Oven/Range","Microwave","Garbage Disposal","Dishwasher","Refrigerator/Freezer") ~ "Kitchen",
+      TRUE~"Other"
+    )
+  )
+
+ggplot(eu_summary)+
+  geom_col(aes(x=n,y=forcats::fct_reorder(abbreviate(circuit_label_type_desc,30),n),fill=category))+
+  scale_x_continuous(labels = scales::comma,expand=c(0,0,.05,0))+
+  scale_fill_brewer(type="qual",palette = 2)+
+  theme_classic()+
+  facet_grid(category~.,scale="free_y",space="free")+
+  labs(x="Number of Observations",y="Equipment Type",fill="Equipment Category",
+       title="Appliance Distrobution of NEEA HEMS Data",
+       subtitle = "Data available for range of household appliances")+
+  theme(
+    legend.position = 'bottom',
+    strip.text.y = element_text(angle = 0),
+    title = element_text(size=9))+
+  guides(fill='none')
+```
+
+# Summary Statistics
+
+For some end uses, energy usage was considerably different when comparing March to September of 2020 to March to September 2019.
+
+```{r stoves}
+
+plot_data<-final_dataset %>% 
+  filter(circuit_label_type_desc=="Stove/Oven/Range") %>% 
+  filter(doy<350) %>% 
+  group_by(date,date_2020) %>% 
+  summarise(kwh=sum(kwh)) %>% 
+  arrange(date) %>% 
+  group_by(year(date)) %>% 
+  mutate(sma=zoo::rollmean(kwh,30,na.pad = T,align = 'right'))
+
+ggplot(plot_data)+
+  geom_smooth(aes(x=date_2020,y=kwh,color=factor(year(date))),linewidth=1.5,method = 'loess',span=.17,se=F)+
+  geom_hline(yintercept = 0,color=NA)+
+  geom_vline(xintercept = as.Date("2020-03-08"))+
+  labs(x="Day of the Year",y="Smoothed Daily Energy Usage (kWh)",color="Time Period",
+       title="Comparison of Stove Energy Usage by Day of Year", subtitle = "Stove usage increased dramatically when the Pandemic started")+
+  scale_color_brewer(type = "qual",palette =  6)+
+  scale_x_date(date_breaks = "1 month",date_labels = "%b",limits = c(as.Date("2020-01-01"),as.Date("2020-09-01")))+
+  theme_minimal()+
+  theme(
+    legend.position = 'bottom',
+    panel.grid.minor.x = element_blank()
+    )
+
+```
+
+# Summary Table
+
+A summary table of each end use including 2019 and 2020 average daily usage (between March 15 and September 1 of each year), percentage change and this distribution of daily usage.
+
+```{r gt_table}
+
+initial_table<-final_dataset %>% 
+  filter(doy<350&doy>yday("2020-03-15")) %>% 
+  group_by(circuit_label_type_desc,date) %>% 
+  summarise(kwh=sum(kwh)) %>% 
+  group_by(circuit_label_type_desc,Year=year(date)) %>% 
+  summarise(
+    kWh=round(sum(kwh),2)
+    ) %>% 
+  pivot_wider(names_from = Year,values_from = kWh) %>% 
+  mutate(`Percent Change`=round((`2020`-`2019`)/`2019`*100,2)) %>% 
+  arrange(-abs((`2020`-`2019`)/`2019`)) %>% 
+  mutate(Histogram=NA) %>% 
+  ungroup()
+
+# plot_list<-NULL
+for(eu in initial_table$circuit_label_type_desc){
+  # print(eu)
+  plot<-final_dataset %>% 
+    filter(doy<350&doy>yday("2020-03-15")) %>% 
+    filter(circuit_label_type_desc==eu) %>% 
+    group_by(circuit_label_type_desc,date,year=factor(year(date))) %>% 
+    summarise(kwh=sum(kwh)) %>% 
+    ggplot()+
+    geom_density(aes(x=kwh,color=year,fill=year),alpha=.4)+
+    scale_color_brewer(type = "qual",palette =  "Set1")+
+    scale_fill_brewer(type = "qual",palette =  "Set1")+
+    scale_y_continuous(breaks = NULL)+
+    theme_minimal()+
+    theme(legend.position = 'bottom')+
+    labs(x="Daily kWh",y=NULL,fill="Year",color="Year")
+  
+  initial_table$Histogram[initial_table$circuit_label_type_desc==eu]<-list(plot)
+}
+
+
+output_table <- initial_table %>%
+  rename(
+    "2019 Usage" = `2019`,
+    "2020 Usage" = `2020`,
+    "End Use"=circuit_label_type_desc) %>% 
+gt() %>%
+text_transform(
+ locations = cells_body(Histogram),
+ fn = function(Histogram) {
+   map(initial_table$Histogram, ggplot_image, height = px(200))
+ }
+) %>% 
+  gtExtras::gt_color_rows(
+    columns = `Percent Change`,
+    palette = c("#E41A1C","white", "#377EB8"),
+    direction = 1,
+    domain = c(-100,100),
+    pal_type = "continuous"
+    )
+
+# brewer.pal(2,"Set1")
+output_table
+
+
+```

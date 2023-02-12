@@ -40,7 +40,7 @@ In this simulation there is a `r scales::percent(cross_prob)` chance in each yea
 
 -   the average position of the parents plus some error
 
-### Offspring color
+### Baby bubble color
 
 Baby bubbles will have the average color (in terms of RGB) of the two parent bubbles. However, there is a chance, that this color will change. Specifically, for each color (R, G, and B) there is a chance equivalent to the strength of each color that that color will become up to 20% stronger, while the other colors will become 20% weaker. That is, strong greens are likely to become stronger green (and less red, and less blue).
 
