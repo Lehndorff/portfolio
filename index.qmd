@@ -1,6 +1,7 @@
 ---
 title: "Welcome!"
 date-modified: "today"
+embed-resources: true
 comments: 
   utterances:
     repo: quarto-dev/quarto-web
@@ -12,10 +13,14 @@ More to come!
 
 Check out my other pages:
 
+-   [Analysis](https://lehndorff.github.io/portfolio/eulr_analysis.html) of home energy usage data
+
 -   A simulation of [swifts](https://lehndorff.github.io/portfolio/page1.html)
 
--   [Something](https://lehndorff.github.io/portfolio/what_is_hcl.html) that helped me better understand HCL
+-   [Generation](https://lehndorff.github.io/portfolio/colorful_circles.html) and [analysis](https://lehndorff.github.io/portfolio/colorcir_analysis.html) of colorful bubbles
 
 -   [Analysis](https://lehndorff.github.io/portfolio/tidy_wwc.html) of the FIFA Women's World Cup inspired by Tidy Tuesday
+
+-   [Something](https://lehndorff.github.io/portfolio/what_is_hcl.html) that helped me better understand HCL
 
 -   [About me](https://lehndorff.github.io/portfolio/about.html)

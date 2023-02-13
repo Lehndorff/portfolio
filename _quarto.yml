@@ -34,13 +34,12 @@ website:
           - conditional_probability.qmd
   navbar:
     left:
-      - href: index.qmd
-        text: Home
+      - href: eulr_analysis.qmd
+        text: HEMS
       - page1.qmd
       - href: tidy_wwc.qmd
         text: Tidy Tuesday
         icon: bar-chart
-      - what_is_hcl.qmd
       - href: about.qmd
         icon: file-person
   page-footer:

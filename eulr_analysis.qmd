@@ -45,11 +45,6 @@ retain_circuits<-circuit_agg %>%
 analysis_data<-analysis_data %>% 
   inner_join(retain_circuits %>% select(-n))
 
-#Step 2 drop incomplete site ids NONE TO DROP
-# site_agg<-analysis_data %>% 
-#   group_by(ee_site_id) %>% 
-#   summarise(n=n_distinct(paste(date,hour)))
-
 #Step 3 drop errant days
 day_agg<-analysis_data %>% 
   group_by(date,hour) %>% 
@@ -106,7 +101,7 @@ ggplot()+
 
 ```
 
-A variety of end uses are represented in the data
+A variety of end uses are represented in the data.
 
 ```{r eus}
 eu_summary<-analysis_data %>% 
@@ -174,7 +169,7 @@ ggplot(plot_data)+
 
 # Summary Table
 
-A summary table of each end use including 2019 and 2020 average daily usage (between March 15 and September 1 of each year), percentage change and this distribution of daily usage.
+A summary table of each end use including 2019 and 2020 average daily usage (between March 15 and September 1 of each year), percentage change and the distribution of daily usage. Results have not been weather normalized.
 
 ```{r gt_table}
 
@@ -184,7 +179,7 @@ initial_table<-final_dataset %>%
   summarise(kwh=sum(kwh)) %>% 
   group_by(circuit_label_type_desc,Year=year(date)) %>% 
   summarise(
-    kWh=round(mean(kwh),2)
+    kWh=round(mean(kwh),3)
     ) %>% 
   pivot_wider(names_from = Year,values_from = kWh) %>% 
   mutate(`Percent Change`=round((`2020`-`2019`)/`2019`*100,2)) %>% 
@@ -192,7 +187,6 @@ initial_table<-final_dataset %>%
   mutate(Histogram=NA) %>% 
   ungroup()
 
-# plot_list<-NULL
 for(eu in initial_table$circuit_label_type_desc){
   # print(eu)
   plot<-final_dataset %>% 
@@ -222,7 +216,7 @@ gt() %>%
 text_transform(
  locations = cells_body(Histogram),
  fn = function(Histogram) {
-   map(initial_table$Histogram, ggplot_image, height = px(200))
+   map(initial_table$Histogram, ggplot_image, height = px(150))
  }
 ) %>% 
   gtExtras::gt_color_rows(
