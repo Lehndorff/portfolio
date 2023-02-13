@@ -184,7 +184,7 @@ initial_table<-final_dataset %>%
   summarise(kwh=sum(kwh)) %>% 
   group_by(circuit_label_type_desc,Year=year(date)) %>% 
   summarise(
-    kWh=round(sum(kwh),2)
+    kWh=round(mean(kwh),2)
     ) %>% 
   pivot_wider(names_from = Year,values_from = kWh) %>% 
   mutate(`Percent Change`=round((`2020`-`2019`)/`2019`*100,2)) %>% 
@@ -215,8 +215,8 @@ for(eu in initial_table$circuit_label_type_desc){
 
 output_table <- initial_table %>%
   rename(
-    "2019 Usage" = `2019`,
-    "2020 Usage" = `2020`,
+    "2019 Average Daily Usage" = `2019`,
+    "2020 Average Daily Usage" = `2020`,
     "End Use"=circuit_label_type_desc) %>% 
 gt() %>%
 text_transform(
