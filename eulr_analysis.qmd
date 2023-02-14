@@ -182,7 +182,7 @@ initial_table<-final_dataset %>%
     kWh=round(mean(kwh),3)
     ) %>% 
   pivot_wider(names_from = Year,values_from = kWh) %>% 
-  mutate(`Percent Change`=round((`2020`-`2019`)/`2019`*100,2)) %>% 
+  mutate(`Percent Change`=round((`2020`-`2019`)/`2019`,4)) %>% 
   arrange(-abs((`2020`-`2019`)/`2019`)) %>% 
   mutate(Histogram=NA) %>% 
   ungroup()
@@ -219,11 +219,12 @@ text_transform(
    map(initial_table$Histogram, ggplot_image, height = px(150))
  }
 ) %>% 
+  fmt_percent(columns = `Percent Change`) %>% 
   gtExtras::gt_color_rows(
     columns = `Percent Change`,
     palette = c("#E41A1C","white", "#377EB8"),
     direction = 1,
-    domain = c(-100,100),
+    domain = c(-1,1),
     pal_type = "continuous"
     )
 

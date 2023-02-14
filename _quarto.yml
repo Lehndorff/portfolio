@@ -33,6 +33,7 @@ website:
           - what_is_hcl.qmd
           - conditional_probability.qmd
   navbar:
+    logo: data/logo.png
     left:
       - href: eulr_analysis.qmd
         text: HEMS
