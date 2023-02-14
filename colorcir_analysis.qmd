@@ -29,7 +29,7 @@ max_age<-tree_dat %>%
   filter(!is.na(die)) %>% 
   group_by(tree) %>% 
   filter(age==max(age)) 
-median_age<-round(median(max_age$age))
+median_age<-round(median(max_age$age)) 
 
 intervals<-max_age %>%
   ungroup() %>% 

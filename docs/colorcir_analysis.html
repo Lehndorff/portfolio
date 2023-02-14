@@ -329,14 +329,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="summary-statistics">Summary Statistics</h2>
 <section id="observed-lifespan" class="level3">
 <h3 class="anchored" data-anchor-id="observed-lifespan">Observed Lifespan</h3>
-<div class="cell" data-hash="colorcir_analysis_cache/html/oblife_28b089503e4c9696bcdb4ae9a67f081a">
+<div class="cell" data-hash="colorcir_analysis_cache/html/oblife_dcb8aa3e9b6a3772be50695726c25067">
 <details>
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>max_age<span class="ot">&lt;-</span>tree_dat <span class="sc">%&gt;%</span> </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(die)) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(tree) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age<span class="sc">==</span><span class="fu">max</span>(age)) </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>median_age<span class="ot">&lt;-</span><span class="fu">round</span>(<span class="fu">median</span>(max_age<span class="sc">$</span>age))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>median_age<span class="ot">&lt;-</span><span class="fu">round</span>(<span class="fu">median</span>(max_age<span class="sc">$</span>age)) </span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>intervals<span class="ot">&lt;-</span>max_age <span class="sc">%&gt;%</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
