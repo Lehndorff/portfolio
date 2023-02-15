@@ -67,4 +67,35 @@ ggplot(output)+
   theme_minimal()+
   labs(x="Luminance",y="Chroma",title="Impact of Luminance and Chroma variation for a sample of Hues")+
   facet_wrap(h~.)
+
+```
+
+Using plotly, the HCL color space can be viewed interactively in three dimensions.
+
+```{r plotly}
+output2<-NULL
+for(h in seq(-150,123,16)){
+  # print(h)
+  z=expand.grid(
+  l=seq(1,150,10),#
+  c=seq(-200,200,10) #
+  ) %>% 
+    mutate(
+      h=h,
+      color=hex(polarLUV(H=h,C=c,L=l))
+      ) %>% 
+    filter(!is.na(color)) %>% #
+    slice_sample(n=10000,replace = T) %>% 
+    distinct()
+  
+  output2<-bind_rows(output2,z)
+  
+}
+
+library(plotly)
+output2<-output2 %>% 
+  # filter(c>0) %>% 
+  arrange(color) %>% ungroup()
+plot_ly(output2,x=~h,y=~l,z=~c,color=~color,colors = unique(output2$color))
+
 ```

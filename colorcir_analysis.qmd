@@ -103,14 +103,18 @@ common_color<-tree_dat %>%
   arrange(-year)
 common_color$color<-rgb(common_color$red,common_color$green,common_color$blue)
 
-common_color %>% 
+plot<-common_color %>% 
+  mutate(`Colors per Hundred`=round(colors/n*100,1)) %>% 
+  rename(Year=year) %>% 
   ggplot()+
-  geom_col(aes(x=year,y=colors/n*100,fill=color),width=1)+
+  geom_col(aes(x=Year,y=`Colors per Hundred`,fill=color),width=1)+
   guides(fill='none')+
   scale_fill_manual(values = unique(common_color$color))+
   scale_x_continuous(labels = scales::comma)+
   theme_minimal()+
   labs(x="Year",y="Unique colors per 100 trees")
+
+plotly::ggplotly(plot)
 
 common_color %>% 
   pivot_longer(red:green) %>% 
