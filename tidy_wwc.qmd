@@ -146,7 +146,8 @@ table_data<-wwc_outcomes %>%
         left_join(codes),
     by=c("year","yearly_game_id"),
     suffix=c("_usa","_opp")) %>% 
-  select(Year=year,Round=round,Opponent=country,`USA Score`=score_usa,`Opponnent Score`=score_opp,Result=win_status) 
+  select(Year=year,Round=round,Opponent=country,`USA Score`=score_usa,`Opponnent Score`=score_opp,Result=win_status) %>% 
+  mutate(across(where(is.character),as.factor))
 
 table_data<-table_data %>% 
   datatable(filter = "top", extensions = c("Scroller",

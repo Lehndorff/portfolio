@@ -32,6 +32,7 @@ website:
         contents:
           - what_is_hcl.qmd
           - conditional_probability.qmd
+          - the_logo.qmd
   navbar:
     logo: data/logo.png
     left:

@@ -4,6 +4,7 @@ editor: visual
 author:
 - name: Hans Lehndorff
 date-modified: "today"
+embed-resources: true
 ---
 
 HCL is a colorspace which is better than RGB for creating perceptually uniform colors.
@@ -26,7 +27,7 @@ The polarLUV function from the colorspace package, takes hue, chroma and luminan
 
 This process goes through a range of hues and generates a sample combinations of chroma and luminance.
 
-```{r some_data}
+```{r setup some_data}
 #| code-fold: false
 #| echo: true
 #| message: false

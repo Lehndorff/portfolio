@@ -16,7 +16,7 @@ load("data/arbor_color.rdata")
 
 A different post generated a `r scales::comma(years)` year simulation of the lives of colorful Bubbles given some set parameter. Here was the result:
 
-![Colorful Bubbles animation](data/colorful_Bubbles.gif){fig-align="center"}
+![Colorful Bubbles animation](data/colorful_bubbles.gif)
 
 # Analysis
 

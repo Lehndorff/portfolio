@@ -43,7 +43,6 @@ plot<-grid %>%
   guides(color='none',size='none')+
   scale_color_manual(values = unique(grid$color))
 
-
 ggsave(plot,file="data/logo.png",width=10,height=10)  
 ggsave(plot,file=sprintf("data/Logos/%s.png",lubridate::now()),width=10,height=10)  
 
