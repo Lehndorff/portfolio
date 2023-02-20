@@ -26,7 +26,7 @@ sites<-read_csv("data/NEEA HEMS/sites.csv")
 
 Data represent a diverse geographic area and a variety of end uses.
 
-```{r interactive_map, cache=FALSE, fig.height=8}
+```{r interactive_map, fig.height=8}
 library(tidyverse)
 library(gt)
 library(lubridate)
