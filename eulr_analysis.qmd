@@ -9,6 +9,8 @@ date-modified: "today"
 library(tidyverse)
 library(gt)
 library(lubridate)
+library(ggiraph)
+library(patchwork)
 
 load('data/NEEA HEMS/final_dataset.rdata')
 load('data/NEEA HEMS/analysis_data.rdata')
@@ -22,9 +24,15 @@ sites<-read_csv("data/NEEA HEMS/sites.csv")
 
 # Data Overview
 
-Data represent a diverse geographic area.
+Data represent a diverse geographic area and a variety of end uses.
 
-```{r map}
+```{r interactive_map, cache=FALSE, fig.height=8}
+library(tidyverse)
+library(gt)
+library(lubridate)
+library(ggiraph)
+library(patchwork)
+
 sites_with_mains<-subset(points,circuit_label_type_desc=="Mains")$ee_site_id
 these_eus<-c(
   "Mains","Hot Tub","Electric Resistance Storage Water Heaters",
@@ -57,10 +65,18 @@ retain_hours<-day_agg %>%
 analysis_data<-analysis_data %>% 
   inner_join(retain_hours %>% select(-n))
 
-weather_stations <- read_csv("data/NEEA HEMS/weather_stations.csv") %>% 
-  mutate(station_id=paste(USAFID,WBAN,sep="-"))
+weather_stations <- read_csv("data/NEEA HEMS/weather_stations_geocodio.csv",name_repair = 'universal') %>% 
+  mutate(station_id=paste(USAFID,WBAN,sep="-")) %>% 
+  mutate(State=case_when(
+    State=="OR"~"Oregon",
+    State=="WA"~"Washington",
+    State=="ID"~"Idaho",
+    State=="MT"~"Montana"
+  ),
+  County=gsub(" County","",County,fixed = T))
 
 state_maps<-map_data("state",c("oregon","washington","idaho","montana"))
+county_maps<-map_data("county",c("oregon","washington","idaho","montana"))
 
 sites_ws<-sites %>% 
   filter(ee_site_id%in%analysis_data$ee_site_id) %>% 
@@ -71,9 +87,13 @@ sites_ws<-sites %>%
   ) 
 
 data_for_map<-analysis_data %>% 
-  left_join(sites_ws %>% select(ee_site_id,station_id,LAT,LONG)) %>% 
-  group_by(station_id,LAT,LONG) %>% 
-  summarise(sites=n_distinct(ee_site_id), data=n())
+  left_join(sites_ws %>% select(ee_site_id,County,State,LAT,LONG)) %>% 
+  group_by(County,State) %>% 
+  summarise(sites=n_distinct(ee_site_id), data=n(),LAT=first(LAT),LONG=first(LONG))
+
+county_maps<-county_maps %>% 
+  mutate(across(region:subregion,stringr::str_to_title)) %>% 
+  left_join(data_for_map,by=c("region"="State","subregion"="County"))
 
 city_labs<-maps::us.cities %>% 
   filter(country.etc%in%c("OR","ID","WA","MT")) %>% 
@@ -81,32 +101,28 @@ city_labs<-maps::us.cities %>%
   mutate(lat=ifelse(name%in%c("Bend OR"),lat-.5,lat+.5),
          long=ifelse(name%in%c("Seattle WA"),long-2,long))
 
-ggplot()+
-  geom_polygon(data=state_maps,aes(x=long,y=lat,group=group),fill='white',color='black')+
-  geom_point(data=data_for_map,aes(x=LONG,y=LAT,size=data,fill=sites),color="black",shape=21,alpha=.5)+
+p1<-ggplot()+
+  geom_polygon(data=state_maps,aes(x=long,y=lat,group=group),color='black',fill=NA)+
+  geom_polygon_interactive(data=county_maps,aes(x=long,y=lat,group=group,fill=data,tooltip = paste(subregion,region), data_id = paste(subregion,region)),color=NA,size=.1)+
+  # geom_point(data=data_for_map,aes(x=LONG,y=LAT,size=data,fill=sites),color="black",shape=21,alpha=.5)+
   geom_label(data=city_labs,aes(x=long,y=lat,label=name))+
   coord_map(xlim = c(-127,-110))+
   theme_void()+
   scale_size_continuous(labels = scales::comma)+
-  scale_fill_viridis_b()+
+  scale_fill_viridis_c(na.value = "white",labels=scales::comma)+
   theme(
     legend.position = 'bottom',
     legend.box= 'horizontal')+
-  labs(fill="Number of Sites",size="Total Observations",
+  labs(fill="Number of Observations",size="Total Observations",
        title="Geographic Distrobution of NEEA HEMS Data",
        subtitle = "Behavioral insights from sample of homes across the Pacific Northwest")+
    guides(fill = guide_colourbar(title.position="top", title.hjust = 0.5),
          size = guide_legend(title.position="top", title.hjust = 0.5))
 
-
-```
-
-A variety of end uses are represented in the data.
-
-```{r eus}
 eu_summary<-analysis_data %>% 
   left_join(points %>% select(ee_site_id,regname,circuit_label_type_desc)) %>% 
-  group_by(circuit_label_type_desc) %>% 
+  left_join(sites_ws %>% select(ee_site_id,region=State,subregion=County)) %>% 
+  group_by(region,subregion,circuit_label_type_desc) %>% 
   summarise(
     n=n()
   ) %>% 
@@ -120,8 +136,8 @@ eu_summary<-analysis_data %>%
     )
   )
 
-ggplot(eu_summary)+
-  geom_col(aes(x=n,y=forcats::fct_reorder(abbreviate(circuit_label_type_desc,30),n),fill=category))+
+p2<-ggplot(eu_summary)+
+  geom_col_interactive(aes(x=n,y=forcats::fct_reorder(abbreviate(circuit_label_type_desc,30),n),fill=category,tooltip = paste(subregion,region), data_id = paste(subregion,region)))+
   scale_x_continuous(labels = scales::comma,expand=c(0,0,.05,0))+
   scale_fill_brewer(type="qual",palette = 2)+
   theme_classic()+
@@ -134,6 +150,10 @@ ggplot(eu_summary)+
     strip.text.y = element_text(angle = 0),
     title = element_text(size=9))+
   guides(fill='none')
+
+a <- girafe(code = print(p1 / p2 + plot_layout(heights = c(.5,.5))))
+
+a
 ```
 
 # Summary Statistics
