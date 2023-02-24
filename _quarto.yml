@@ -55,15 +55,15 @@ format:
     code-fold: true
     code-summary: 'Show code'
     theme:
-      light: flatly
       dark: darkly
+      light: flatly
     css: styles.css
     toc: true
     
 editor: visual
 
 execute: 
-  cache: true
+  cache: false
   messages: false
   warning: false
 

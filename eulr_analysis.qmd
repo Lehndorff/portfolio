@@ -3,6 +3,7 @@ title: "Impact on Electricity Usage Caused by the COVID-19 Pandemic"
 author: "Hans Lehndorff"
 contributor: "Cleighton Roberts"
 date-modified: "today"
+theme: flatly
 ---
 
 ```{r, include=FALSE}
@@ -111,7 +112,6 @@ p1<-ggplot()+
   scale_size_continuous(labels = scales::comma)+
   scale_fill_viridis_c(na.value = "white",labels=scales::comma)+
   theme(
-    legend.position = 'bottom',
     legend.box= 'horizontal')+
   labs(fill="Number of Observations",size="Total Observations",
        title="Geographic Distrobution of NEEA HEMS Data",
