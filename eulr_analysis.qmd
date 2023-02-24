@@ -6,7 +6,7 @@ date-modified: "today"
 ---
 
 ```{r, include=FALSE}
-library(tidyverse)
+library(tidyverse) 
 library(gt)
 library(lubridate)
 library(ggiraph)
