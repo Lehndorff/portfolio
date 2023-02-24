@@ -111,11 +111,11 @@ p1<-ggplot()+
   scale_size_continuous(labels = scales::comma)+
   scale_fill_viridis_c(na.value = "white",labels=scales::comma)+
   theme(
+    legend.key.width=unit(.4,"in"),
     legend.position = 'bottom',
     legend.box= 'horizontal')+
   labs(fill="Number of Observations",size="Total Observations",
-       title="Geographic Distrobution of NEEA HEMS Data",
-       subtitle = "Behavioral insights from sample of homes across the Pacific Northwest")+
+       title="Geographic Distrobution of NEEA HEMS Data")+
    guides(fill = guide_colourbar(title.position="top", title.hjust = 0.5),
          size = guide_legend(title.position="top", title.hjust = 0.5))
 
