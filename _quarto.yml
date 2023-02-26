@@ -23,6 +23,12 @@ website:
             text: "Generation"
           - href: colorcir_analysis.qmd
             text: "Analysis"
+      - section: "Tidy Tuesday"
+        contents:
+          - href: tidy_wwc.qmd
+            text: "Women's World Cup"
+          - href: nyc_squirrel.qmd
+            text: "NYC Squirrel Census"
       - section: "Other pages"
         contents:
           - page1.qmd
@@ -38,10 +44,8 @@ website:
     left:
       - href: eulr_analysis.qmd
         text: HEMS
-      - page1.qmd
-      - href: tidy_wwc.qmd
-        text: Tidy Tuesday
         icon: bar-chart
+      - page1.qmd
       - href: about.qmd
         icon: file-person
   page-footer:

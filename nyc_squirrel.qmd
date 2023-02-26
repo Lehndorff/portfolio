@@ -1,0 +1,108 @@
+---
+format:
+  html:
+    theme: flatly
+    
+title: "Tidy Tuesday and the NYC Squirrel Census"
+date-modified: "today"
+author:
+- name: Hans Lehndorff
+---
+
+```{r setup, include=FALSE}
+library(nycsquirrels18)
+library(tidyverse)
+
+data("squirrels")
+```
+
+This plot shows where (on a map) squirrels were most commonly observed. The highest concentration of squirrel sightings was observed at the central north end of the park.
+
+```{r heat}
+
+squirrels %>% 
+  ggplot()+
+  geom_bin2d(aes(y=lat,x=long))+
+  theme_minimal()+
+  coord_map()+
+  labs(
+    x=NULL,y=NULL,
+    fill="Count of\nSquirrels",subtitle="Heat Map of Squirrel Sightings in Central Park",title='Squirrel Town')+
+  theme(
+    legend.position = 'bottom',
+    plot.caption = element_text(hjust = 0)
+    )
+```
+
+Squirrels often do more than one thing at once. This figure shows the frequency of secondary activities for each primary activity. The most common activity for squirrels that are primarily eating is to also be foraging. However, squirels that are primarily foraging are typically only foraging.
+
+```{r activities}
+activity_data<-NULL
+for(i in c("running", "chasing", "climbing", "eating", "foraging")){
+
+  act_dat<-squirrels %>% 
+    select(unique_squirrel_id,running:foraging) %>% 
+    rename(int=i) %>% 
+    pivot_longer(-c(int,unique_squirrel_id)) %>% 
+    filter(int==TRUE) %>% 
+    group_by(primary=i,name) %>% 
+    summarise(freq=mean(value))
+  
+  act_dat<-bind_rows(
+    act_dat,
+    data.frame(primary=i,name=i,freq=1-sum(act_dat$freq))
+    )
+  activity_data<-bind_rows(activity_data,act_dat)
+}
+
+activity_data %>% 
+  mutate(secondary=ifelse(name==primary,"No","Yes")) %>% 
+  ggplot()+
+  geom_col(aes(x=name,y=freq,fill=secondary))+
+  scale_y_continuous(labels=scales::percent_format(accuracy = 1))+
+  facet_grid(.~paste(primary,"and..."),switch='x')+
+  theme_minimal()+
+  scale_fill_brewer(type='qual',palette = 7)+
+  labs(x=NULL,y=NULL,fill="Doing two things at once?",subtitle="The Simultaneous Activities of Squirrels",title='Going Nuts'
+         )+
+  theme(
+    legend.position = 'bottom',
+    axis.text.x = element_text(angle = 45,hjust=1),
+    plot.caption = element_text(hjust = 0)
+    )
+```
+
+What are the most common color combinations of squirrels and how did the frequency of those colors change over time for surveyors? While Gray only squirrels were observed most frequently, at times gray and cinnamon squirrels were actually more common.
+
+```{r, color}
+
+squirrels %>%  
+  group_by(date,primary_fur_color,highlight_fur_color) %>% 
+  summarise(n=n()) %>% 
+  group_by(date) %>% 
+  mutate(total=sum(n)) %>% 
+  filter(paste(primary_fur_color,highlight_fur_color)%in%c("Gray NA","Gray Cinnamon","Gray White")) %>% 
+  mutate(type=ifelse(is.na(highlight_fur_color),"Gray Only",paste(primary_fur_color,"and",highlight_fur_color))) %>% 
+  ggplot()+
+  geom_line(aes(x=date,y=n/total,group=type),color='darkgray',size=1.1)+
+  geom_line(aes(x=date,y=n/total,linetype=!is.na(highlight_fur_color),group=type,color=type),size=1.1)+
+  scale_y_continuous(labels=scales::percent_format(accuracy = 1),limits = c(0,NA),breaks = seq(0,.4,.2))+
+  scale_x_date(breaks=c(min(squirrels$date),as.Date('2018-10-13'),max(squirrels$date)),date_labels="%B %e")+
+  scale_color_manual(values=c("darkred","white","gray"),name="Squirrel Color")+
+  scale_linetype_manual(values=c("solid", "dashed"),guide='none')+
+  labs(title="Same Squirrel, Different Day...",subtitle = "Frequency by Day of the Three Most Commonly Observed Squirrel Colors",y="Percent of all Squirrels Observed",x=NULL)+
+  theme_minimal()+
+  theme(
+    legend.key = element_rect(fill=c('black')),
+    legend.key.width = unit(.8, 'in'),
+    legend.key.height = unit(.02, 'in'),
+    panel.background = element_rect(fill='black'),
+    panel.grid.major = element_line(color="white"),
+    panel.grid.minor = element_blank(),
+    legend.position = 'bottom',
+    plot.caption = element_text(hjust = 0)
+    )+
+  guides(
+    color=guide_legend(override.aes = list(linetype = c(2,2,1)),nrow = 3),
+    linetype='none')
+```
