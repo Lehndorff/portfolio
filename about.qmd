@@ -11,3 +11,9 @@ I am currently a consultant at [Evergreen Economics](https://evergreenecon.com).
 [Evergreen Economics Resume](https://evergreenecon.com/wp-content/uploads/2021/06/Lehndorff-Resume_June2021.pdf)
 
 I started at Evergreen in 2016 after graduating from Willamette University.
+
+Here's a presentation about some data visualization techniques that I enjoy using.
+
+<iframe src="https://lehndorff.github.io/portfolio/Presentation.html#/title-slide" width="680" height="600" allowfullscreen>
+
+</iframe>
