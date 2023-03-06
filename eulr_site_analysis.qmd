@@ -1,0 +1,229 @@
+---
+title: "Site-Level Analysis of HEMS Data"
+author: "Hans Lehndorff"
+contributor: "With data from NEEA HEMS"
+format:
+  docx: 
+    self-contained: true
+params:
+  this_site: 976
+---
+
+```{r setup, include=FALSE}
+library(tidyverse) 
+library(gt)
+library(lubridate)
+library(ggiraph)
+library(patchwork)
+library(rmarkdown)
+
+pm_ify<-function(x){
+  output<-format(strptime(x, format='%H'), '%I %p')
+  output[substr(output,1,1)==0]<-gsub("0","",output[substr(output,1,1)==0])
+  output[output=="12 PM"]<-"Noon"
+  output[output=="12 AM"]<-"Mid\nnight"
+  output_2 <- unique(output)
+  output<-factor(output_2,levels = c(output_2))
+  return(output)
+}
+
+load('/Users/lehndorff/Desktop/MSDS/GSM_6027/portfolio/data/NEEA HEMS/final_dataset.rdata')
+load('/Users/lehndorff/Desktop/MSDS/GSM_6027/portfolio/data/NEEA HEMS/analysis_data.rdata')
+points<-read_csv("/Users/lehndorff/Desktop/MSDS/GSM_6027/portfolio/data/NEEA HEMS/points.csv")
+sites<-read_csv("/Users/lehndorff/Desktop/MSDS/GSM_6027/portfolio/data/NEEA HEMS/sites.csv")
+
+weather_stations <- read_csv("/Users/lehndorff/Desktop/MSDS/GSM_6027/portfolio/data/NEEA HEMS/weather_stations_geocodio.csv",name_repair = 'universal') %>% 
+  mutate(station_id=paste(USAFID,WBAN,sep="-")) %>% 
+  mutate(State=case_when(
+    State=="OR"~"Oregon",
+    State=="WA"~"Washington",
+    State=="ID"~"Idaho",
+    State=="MT"~"Montana"
+  ),
+  County=gsub(" County","",County,fixed = T))
+
+state_maps<-map_data("state",c("oregon","washington","idaho","montana"))
+county_maps<-map_data("county",c("oregon","washington","idaho","montana"))
+
+sites_ws<-sites %>% 
+  filter(ee_site_id%in%analysis_data$ee_site_id) %>% 
+  left_join(
+    weather_stations %>% 
+      group_by(station_id) %>% 
+      filter(1:n()==1)
+  ) 
+
+data_for_map<-analysis_data %>% 
+  left_join(sites_ws %>% select(ee_site_id,County,State,LAT,LONG)) %>% 
+  group_by(County,State) %>% 
+  summarise(sites=n_distinct(ee_site_id), data=n(),LAT=first(LAT),LONG=first(LONG))
+
+county_maps<-county_maps %>% 
+  mutate(across(region:subregion,stringr::str_to_title)) %>% 
+  left_join(data_for_map,by=c("region"="State","subregion"="County"))
+
+site=toString(params$this_site)
+
+site_record<-subset(sites_ws,ee_site_id==site)
+
+```
+
+# Site level analysis of Site `r site`.
+
+Site `r site` is located near `r paste(site_record$County,"County,",site_record$State)`.
+
+```{r map, fig.width=8, warning=FALSE, message=FALSE, echo=FALSE}
+
+ggplot()+
+  geom_polygon(data=state_maps,aes(x=long,y=lat,group=group),color='black',fill=NA)+
+  geom_point(data=site_record,aes(x=LONG,y=LAT),color="black",fill="blue",shape=24,size=5)+
+  coord_map(xlim = c(-127,-110))+
+  theme_void()
+
+```
+
+## This is the typical load profile for this site.
+
+```{r, fig.width=7, warning=FALSE, message=FALSE, echo=FALSE}
+site_data<-analysis_data %>% 
+  filter(ee_site_id==site) %>% 
+  left_join(points) 
+
+max_usage<-site_data %>% 
+  filter(regname!="Mains") %>% 
+  group_by(circuit_label_type_desc) %>% 
+  summarise(kwh=sum(kwh)) %>% 
+  arrange(-kwh)
+
+
+load_shape_data<-site_data%>%
+  filter(!grepl("Mains",regname)) %>% 
+  group_by(ee_site_id,regname,hour,circuit_label_type_desc) %>% 
+  summarise(kwh=mean(kwh)) %>% 
+  ungroup() %>% 
+  mutate(circuit_label_type_desc=ifelse(circuit_label_type_desc%in%max_usage$circuit_label_type_desc[1:5],circuit_label_type_desc,"Other")) %>% 
+  group_by(ee_site_id,hour,circuit_label_type_desc) %>% 
+  summarise(kwh=sum(kwh)) %>% 
+  mutate(circuit_label_type_desc=factor(circuit_label_type_desc,levels=unique(rev(c(max_usage$circuit_label_type_desc[1:5],"Other"))))) %>% 
+  mutate(hour=ifelse(hour==0,24,hour))
+
+p1<-ggplot(load_shape_data)+
+  geom_col_interactive(aes(x=hour,y=kwh,fill=circuit_label_type_desc,data_id=circuit_label_type_desc))+
+  theme_minimal()+
+  labs(fill="Equipment Type",x="Hour",y="Average Hourly kWh")+
+  theme(legend.position = 'bottom')+
+  scale_x_continuous(labels = pm_ify,breaks = seq(6,24,6))+
+  scale_fill_brewer(type = "qual",palette = 2)
+
+p1
+
+# p2<-load_shape_data %>% 
+#   group_by(circuit_label_type_desc) %>% 
+#   summarise(total=sum(kwh)) %>% 
+#   ggplot()+
+#   geom_col_interactive(aes(x=circuit_label_type_desc,y=total,fill=circuit_label_type_desc,data_id=circuit_label_type_desc))+
+#   scale_fill_brewer(type = "qual",palette = 2)+
+#   theme_minimal()+
+#   theme(
+#     legend.position = 'bottom')+
+#   # scale_x_discrete(limits = rev)+
+#   labs(x=NULL,y="Daily Total kWh")+
+#   guides(fill='none')+
+#   coord_flip()
+# 
+# a <- girafe(code = print(p1 / p2 + plot_layout(heights = c(.5,.5))))
+# 
+# a
+
+```
+
+## Change in March to October energy usage between 2019 and 2020 (non-weather normalized).
+
+```{r covid, warning=FALSE, message=FALSE, echo=FALSE}
+
+initial_table<-site_data %>% 
+  mutate(doy=yday(date)) %>% 
+  filter(doy<350&doy>yday("2020-03-15")) %>% 
+  group_by(circuit_label_type_desc,date) %>% 
+  summarise(kwh=sum(kwh)) %>% 
+  group_by(circuit_label_type_desc,Year=year(date)) %>% 
+  summarise(
+    kWh=round(mean(kwh),3)
+    ) %>% 
+  pivot_wider(names_from = Year,values_from = kWh) %>% 
+  mutate(`Percent Change`=round((`2020`-`2019`)/`2019`,4)) %>% 
+  arrange(-abs((`2020`-`2019`)/`2019`)) %>% 
+  mutate(Histogram=NA,load=NA) %>% 
+  ungroup() %>% 
+  filter(`2019`>.1)
+
+for(eu in initial_table$circuit_label_type_desc){
+  # print(eu)
+  plot<-site_data %>% 
+    mutate(doy=yday(date)) %>% 
+    filter(doy<350&doy>yday("2020-03-15")) %>% 
+    filter(circuit_label_type_desc==eu) %>% 
+    group_by(circuit_label_type_desc,date,year=factor(year(date))) %>% 
+    summarise(kwh=sum(kwh)) %>% 
+    ggplot()+
+    geom_density(aes(x=kwh,color=year,fill=year),alpha=.4)+
+    scale_color_brewer(type = "qual",palette =  "Set1")+
+    scale_fill_brewer(type = "qual",palette =  "Set1")+
+    scale_y_continuous(breaks = NULL)+
+    theme_minimal()+
+    theme(legend.position = 'bottom')+
+    labs(x="Daily kWh",y=NULL,fill="Year",color="Year")
+  
+  initial_table$Histogram[initial_table$circuit_label_type_desc==eu]<-list(plot)
+  
+  plot2<-site_data %>% 
+    mutate(doy=yday(date)) %>% 
+    filter(doy<350&doy>yday("2020-03-15")) %>% 
+    filter(circuit_label_type_desc==eu) %>% 
+    group_by(circuit_label_type_desc,hour,year=factor(year(date))) %>% 
+    summarise(kwh=mean(kwh)) %>% 
+    ggplot()+
+    geom_smooth(aes(x=hour,y=kwh,color=year),span = 0.2,se=F)+
+    scale_color_brewer(type = "qual",palette =  "Set1")+
+    scale_x_continuous(labels = pm_ify,breaks = seq(6,24,6))+
+    scale_y_continuous(limits = c(0,NA))+
+    theme_classic()+
+    theme(legend.position = 'bottom')+
+    labs(x="Hour",y="Average kWh",color="Year")
+  
+  initial_table$load[initial_table$circuit_label_type_desc==eu]<-list(plot2)
+}
+
+
+initial_table<-initial_table %>% 
+  mutate(
+    phrase=
+      paste(circuit_label_type_desc,"usage",ifelse(`Percent Change`>0,"increased","decreased"),"by",scales::percent(abs(`Percent Change`)))
+  ) %>% 
+  filter(circuit_label_type_desc!="Mains")
+
+```
+
+### `r initial_table$phrase[1]`
+
+```{r eu1,fig.width=6.5, warning=FALSE, message=FALSE, echo=FALSE}
+initial_table$Histogram[[1]]+
+  labs(x=paste("Daily Usage of",initial_table$circuit_label_type_desc[1],"(kWh)"))
+```
+
+```{r eu1b,fig.width=6.5, warning=FALSE, message=FALSE, echo=FALSE}
+initial_table$load[[1]]+
+  labs(y=paste("Average Hourly Usage of",initial_table$circuit_label_type_desc[1],"(kWh)"))
+```
+
+### `r initial_table$phrase[2]`
+
+```{r eu2, fig.width=6.5,warning=FALSE, message=FALSE, echo=FALSE}
+initial_table$Histogram[[2]]+
+  labs(x=paste("Daily Usage of",initial_table$circuit_label_type_desc[2],"(kWh)"))
+```
+
+```{r eu2b,fig.width=6.5, warning=FALSE, message=FALSE, echo=FALSE}
+initial_table$load[[2]]+
+  labs(y=paste("Average Hourly Usage of",initial_table$circuit_label_type_desc[2],"(kWh)"))
+```
