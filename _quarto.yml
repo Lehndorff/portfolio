@@ -67,7 +67,7 @@ format:
 editor: visual
 
 execute: 
-  cache: true
+  cache: false
   messages: false
   warning: false
 
