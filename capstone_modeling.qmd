@@ -1,0 +1,6 @@
+---
+title: "Capstone - Modeling"
+author: "Hans Lehndorff"
+---
+
+# Modeling Approaches Used in Capstone Project

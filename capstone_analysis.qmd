@@ -1,0 +1,8 @@
+---
+title: "Capstone - Analysis"
+author: "Hans Lehndorff"
+---
+
+# Interactive Analysis for Capstone Project
+
+<https://lehndorff.shinyapps.io/impacts_app/>
