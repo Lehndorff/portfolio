@@ -13,14 +13,14 @@ website:
     style: "docked"
     search: true
     contents:
-      - section: "Capstone Project"
-        contents:
-          - href: capstone_data.qmd
-            text: "Data"
-          - href: capstone_modeling.qmd
-            text: "Modeling"
-          - href: capstone_analysis.qmd
-            text: "Analysis"
+      # - section: "Capstone Project"
+      #   contents:
+      #     - href: capstone_data.qmd
+      #       text: "Data"
+      #     - href: capstone_modeling.qmd
+      #       text: "Modeling"
+      #     - href: capstone_analysis.qmd
+      #       text: "Analysis"
       - section: "Home Energy Usage"
         contents:
           href: eulr_analysis.qmd
