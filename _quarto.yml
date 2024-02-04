@@ -25,6 +25,10 @@ website:
         contents:
           href: eulr_analysis.qmd
           text: "Impact of COVID-19"
+      - section: "Travel Analysis"
+        contents:
+          href: travel_concept.qmd
+          text: "Theoretical Traffic"
       - section: "Colorful Bubbles"
         contents:
           - href: colorful_circles.qmd

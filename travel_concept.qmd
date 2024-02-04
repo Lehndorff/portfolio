@@ -1,0 +1,125 @@
+---
+format:
+  html:
+    theme: flatly
+    
+title: "Theoretical Traffic"
+date-modified: "today"
+author:
+- name: Hans Lehndorff
+---
+
+```{r setup, include=FALSE}
+library(sp)
+library(sf)
+library(ggplot2)
+library(tidyverse)
+library(rvest)
+library(jsonlite)
+library(lubridate)
+library(osmdata)
+
+```
+
+This analysis leverages publicly available datasets to assess the driving trends in a geographic area at a given time. 
+
+In this example, I analyze the traffic patterns in Portland, Oregon on October 10, 2023 just after 11 AM. 
+
+One key data source for this analysis is the osmdata package. The osmdata package includes a wide variety geographic data. To begin, the data of interest is the geographic boundries of Portland. 
+
+```{r osm}
+
+location="Portland Oregon"
+
+border<-getbb(location)%>%
+  opq()%>%
+  add_osm_feature(key="border_type") %>%
+  osmdata_sf()
+
+polygon<-border$osm_multipolygons[border$osm_multipolygons$name==sub("\\s+\\w+", "", location),]
+
+```
+
+I then use the following R function to identify a starting point and an ending point within the boundries of Portland for which to simulate a drive. These random points then feed into a TomTom API call which returns various data including the fastest driving route between the two points. For this analysis, this same process is repeated with 1,000 sets of random points simulating 1,000 driving trips across the city.
+
+```{r sampling}
+# Function to generate random points within a polygon
+generate_random_points <- function(polygon) {
+  min_x <- st_bbox(polygon)[1]
+  max_x <- st_bbox(polygon)[3]
+  min_y <- st_bbox(polygon)[2]
+  max_y <- st_bbox(polygon)[4]
+  
+  random_points <- data.frame(
+    x = runif(100, min_x, max_x),
+    y = runif(100, min_y, max_y)
+  )
+  
+  random_points <- st_as_sf(random_points, coords = c("x", "y"), crs = st_crs(polygon))
+  random_points <- random_points[st_within(random_points, polygon,sparse = F),]
+  
+  # random_points<-st_coordinates(random_points)
+  my_latlon_df <- st_transform(random_points, crs = 4326) 
+  
+  output<-my_latlon_df%>%
+      mutate( lat= st_coordinates(my_latlon_df)[,1],
+              lon = st_coordinates(my_latlon_df)[,2]) %>% 
+    data.frame() %>% 
+    filter(1:n()==1) %>% 
+    select(lat,lon)
+
+
+  return(output)
+}
+
+start<-generate_random_points(polygon)
+end<-generate_random_points(polygon)
+  
+q<-paste0("https://api.tomtom.com/routing/1/calculateRoute/",
+         start$lon,"%2C",start$lat,"%3A",
+         end$lon,"%2C",end$lat,
+         "/json?maxAlternatives=0&computeTravelTimeFor=all&vehicleHeading=270&departAt=now&routeType=fastest&traffic=true&travelMode=car&key=","YOUR_KEY_HERE"
+         )
+
+# output <- read_html(q) %>% 
+#   html_text() %>% 
+#   fromJSON()
+
+```
+
+```{r load_data, include=FALSE}
+load_this<-"/Users/lehndorff/Desktop/MSDS/Travel Concept/System/PDX"
+
+travel<-lapply(dir(load_this,full.names = T,pattern = ".csv"),read.csv) %>% 
+  bind_rows()
+
+coords<-getbb(location) %>% 
+  t() %>% 
+  data.frame()
+```
+
+The resulting travel routes can be read into generate analytical outputs -- in this case, a chart. For the figure, each of the 1,000 routes is shown as faint black line on the map. The blue represents the rivers of Portland with data coming from the osmdata package. Once all of the routes are added the main travel patterns of the city (on October 10, 2023 just after 11 AM) become clear. Given a drive between two random points in the city, one of city's interstates would likely be part of the drive. Interestingly, this analysis also show that for certain drives, the fastest route is north in to Washington state before returning to Portland.
+
+```{r, chart, fig.width=8}
+water<-getbb(location)%>%
+  opq()%>%
+  add_osm_feature(key = "water") %>%
+  osmdata_sf()
+
+ggplot() +
+  geom_sf(
+    data = water$osm_multipolygons[water$osm_multipolygons$water%in%c("river"),],
+    inherit.aes = FALSE,
+    fill = "steelblue",
+    color = "steelblue",
+    alpha = 1
+    ) +
+  geom_path(data=travel,aes(y=latitude,x=longitude,group=request_id),alpha=10/n_distinct(travel$request_id),color="black")+
+  coord_sf(
+    xlim = range(travel$longitude),
+    ylim = range(travel$latitude),
+    expand = T,
+    clip = "on")+
+  theme_void()
+
+```
