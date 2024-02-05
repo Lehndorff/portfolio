@@ -7,13 +7,13 @@ comments:
     repo: quarto-dev/quarto-web
 ---
 
-More to come!
-
 ------------------------------------------------------------------------
 
-Check out my other pages:
+Check out my pages:
 
 -   [Analysis](https://lehndorff.github.io/portfolio/eulr_analysis.html) of home energy usage data
+
+-   [Visualizing traffic](https://lehndorff.github.io/portfolio/travel_concept.html) around Portland, OR
 
 -   A simulation of [swifts](https://lehndorff.github.io/portfolio/page1.html)
 
