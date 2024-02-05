@@ -115,7 +115,7 @@ p1<-ggplot()+
     legend.position = 'bottom',
     legend.box= 'horizontal')+
   labs(fill="Number of Observations",size="Total Observations",
-       title="Geographic Distrobution of NEEA HEMS Data")+
+       title="Geographic Distribution of NEEA HEMS Data")+
    guides(fill = guide_colourbar(title.position="top", title.hjust = 0.5),
          size = guide_legend(title.position="top", title.hjust = 0.5))
 
@@ -189,7 +189,7 @@ ggplot(plot_data)+
 
 # Summary Table
 
-A summary table of each end use including 2019 and 2020 average daily usage (between March 15 and September 1 of each year), percentage change and the distribution of daily usage. Results have not been weather normalized.
+Below is a summary table of each end use including 2019 and 2020 average daily usage (between March 15 and September 1 of each year), percentage change and the distribution of daily usage. Results have not been weather normalized.
 
 ```{r gt_table}
 
