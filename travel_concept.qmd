@@ -21,11 +21,11 @@ library(osmdata)
 
 ```
 
-This analysis leverages publicly available datasets to assess the driving trends in a geographic area at a given time. 
+Utilizing accessible datasets, this study examines vehicular movement trends within a specific locale at a chosen time.
 
-In this example, I analyze the traffic patterns in Portland, Oregon on October 10, 2023 just after 11 AM. 
+The case in point evaluates the traffic flow in Portland, Oregon, around 11 AM on October 10, 2023.
 
-One key data source for this analysis is the osmdata package. The osmdata package includes a wide variety geographic data. To begin, the data of interest is the geographic boundries of Portland. 
+A primary tool in this study is the osmdata package, which offers a vast array of geographical information. The initial step involves outlining Portland's geographic confines.
 
 ```{r osm}
 
@@ -40,7 +40,7 @@ polygon<-border$osm_multipolygons[border$osm_multipolygons$name==sub("\\s+\\w+",
 
 ```
 
-I then use the following R function to identify a starting point and an ending point within the boundries of Portland for which to simulate a drive. These random points then feed into a TomTom API call which returns various data including the fastest driving route between the two points. For this analysis, this same process is repeated with 1,000 sets of random points simulating 1,000 driving trips across the city.
+Subsequently, an R script is employed to pinpoint random start and end points within Portland's limits to model a driving route. These coordinates then prompt a TomTom API request, yielding details including the optimal driving path connecting the points. This method is replicated for 1,000 pairs of random coordinates to simulate 1,000 different vehicular routes across the city.
 
 ```{r sampling}
 # Function to generate random points within a polygon
@@ -98,9 +98,9 @@ coords<-getbb(location) %>%
   data.frame()
 ```
 
-The resulting travel routes can be read into generate analytical outputs -- in this case, a chart. For the figure, each of the 1,000 routes is shown as faint black line on the map. The blue represents the rivers of Portland with data coming from the osmdata package. Once all of the routes are added the main travel patterns of the city (on October 10, 2023 just after 11 AM) become clear. Given a drive between two random points in the city, one of city's interstates would likely be part of the drive. Interestingly, this analysis also show that for certain drives, the fastest route is north in to Washington state before returning to Portland.
+The compiled routes are visualized on a chart, with each route depicted as a subtle black line against the map backdrop. The map also features the blue-tinged rivers of Portland, sourced from the osmdata package. With all routes plotted, the principal traffic flows on October 10, 2023, just after 11 AM, emerge distinctly. A typical drive between two random spots in the city will likely incorporate a segment of the interstate highways. Notably, the study reveals that the swiftest path for some journeys involves a detour through Washington State before circling back to Portland.
 
-```{r, chart, fig.width=8}
+```{r, chart, fig.width= 10, fig.height=8}
 water<-getbb(location)%>%
   opq()%>%
   add_osm_feature(key = "water") %>%
